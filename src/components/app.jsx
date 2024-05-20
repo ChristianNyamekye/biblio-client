@@ -5,6 +5,9 @@ import {
 import NavBar from './nav-bar';
 import Home from './home';
 import Profile from './profile';
+import Login from './login';
+import Signup from './signup';
+
 import Education from './education';
 import '@mantine/core/styles.css';
 
@@ -20,6 +23,8 @@ function App(props) {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<FallBack />} />
           <Route path="/how-it-works" element={<Education />} />
         </Routes>

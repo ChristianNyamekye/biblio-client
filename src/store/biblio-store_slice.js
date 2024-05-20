@@ -63,15 +63,15 @@ export default function createPostSlice(set, get) {
       }
     },
 
-    // catched used user Id collections into the database can be requested here 
+    // catched used user Id collections into the database can be requested here
     fetchPassword: async (userId) => {
-        try {
-            const response = await axios.get(`${ROOT_URL}/books/${userId}${API_KEY}`);
-            set (({ bookSlice }) => { bookSlice.password = response.data;}, false, 'posts/fetchPassword');
-        }catch(error) {
-            get().erroSlice.newError(error.message);
-        }
-    }
+      try {
+        const response = await axios.get(`${ROOT_URL}/books/${userId}${API_KEY}`);
+        set(({ bookSlice }) => { bookSlice.password = response.data; }, false, 'posts/fetchPassword');
+      } catch (error) {
+        get().erroSlice.newError(error.message);
+      }
+    },
 
   };
 }

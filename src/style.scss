@@ -20,7 +20,7 @@ html {
   padding: 0px 30px;
   display: flex;
   align-items: center;
-  color: #FAB007;
+  color: #4C6EF5;
 }
 .logo{
   width: 40px;
@@ -38,13 +38,13 @@ html {
 }
 .navbar li a {
   display: block;
-  color: #FAB007;  
+  color: #4C6EF5;  
   text-align: center;
   padding: 8px 16px;
   text-decoration: none;
 }
 .navbar li a:hover {
-  background-color: #FEF7EA;
+  background-color: #ECF0FE;
   border-radius: 8px;
 }
 .profile{
@@ -66,18 +66,18 @@ html {
 }
 .center-dash{
   // background-color: red;
-  width: 55%;
+  width: 80%;
   border-radius: 20px;
-  margin-right: 10px;
-}
-.center-top-dash{
+  margin-right: 0px;
   background-color: white;
   border-radius: 20px;
-  height: 55%;
+  height: 100%;
   margin-bottom: 10px;
-  color:"yellow" !important;
   padding: 10px 20px;
-
+}
+.center-dash-header{
+  display: flex;
+  justify-content: space-between;
 }
 .center-botton-dash{
   background-color: white;

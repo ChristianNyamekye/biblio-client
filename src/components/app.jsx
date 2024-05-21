@@ -5,6 +5,12 @@ import {
 import NavBar from './nav-bar';
 import Home from './home';
 import Profile from './profile';
+import Login from './login';
+import Signup from './signup';
+import UploadBook from './upload_book';
+import DisplayBook from './display_book';
+import UpdateBook from './update_book';
+
 import Education from './education';
 import '@mantine/core/styles.css';
 import UploadBook from './upload_book';
@@ -23,11 +29,19 @@ function App(props) {
         <NavBar />
         <Routes>
           <Route path="/" element={<Signup />} />
+<<<<<<< HEAD
+=======
+          <Route path="/login" element={<Login />} />
+>>>>>>> eed9b1c
           <Route path="/books" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
 
+<<<<<<< HEAD
           {/* allow user to upload from the user profile or home page */}
+=======
+          {/* allow user to upload from the user profile or home page */}\
+>>>>>>> eed9b1c
           <Route path="/profile/upload" element={<UploadBook />} />
 
           {/* allow user to view more about their book or other books in their profile */}

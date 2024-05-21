@@ -3,9 +3,19 @@ import {
   Modal, Image, Text, Group, Badge, Button, SimpleGrid, Card,
 } from '@mantine/core';
 import hobbit from '../assets/hobbit.jpg';
+import TradeModal from './tradeModal';
 
 function BookModal() {
   const [opened, setOpened] = useState(false);
+  const [isTradeModalOpen, setTradeModalOpen] = useState(false);
+
+  const handleOpenTradeModal = () => {
+    setTradeModalOpen(true);
+  };
+
+  const handleCloseTradeModal = () => {
+    setTradeModalOpen(false);
+  };
 
   return (
     <>
@@ -65,10 +75,11 @@ function BookModal() {
                 style={{ borderRadius: '20px' }}
                 variant="filled"
                 color="blue"
-                onClick={() => console.log('Clicked!')}
+                onClick={handleOpenTradeModal}
               >
                 Trade Now
               </Button>
+              <TradeModal isOpen={isTradeModalOpen} onClose={handleCloseTradeModal} />
             </Group>
           </div>
         </SimpleGrid>

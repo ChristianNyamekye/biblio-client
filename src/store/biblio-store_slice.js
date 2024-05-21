@@ -13,10 +13,10 @@ export default function createPostSlice(set, get) {
     fetchBook: async (bookId, fromProfile) => {
       try {
         let response;
-        if (fromProfile){
+        if (fromProfile) {
           response = await axios.get(`${ROOT_URL}/profile/${bookId}${API_KEY}`);
-        }else {
-          const response = await axios.get(`${ROOT_URL}/books/${bookId}${API_KEY}`);
+        } else {
+          response = await axios.get(`${ROOT_URL}/books/${bookId}${API_KEY}`);
         }
         set(({ biblioSlice }) => { biblioSlice.bookInfoToView = response.data; }, false, 'posts/fetchBook');
       } catch (error) {
@@ -38,9 +38,9 @@ export default function createPostSlice(set, get) {
     uploadBook: async (bookInfo, fromProfile) => {
       try {
         let response;
-        if (fromProfile){
+        if (fromProfile) {
           response = await axios.put(`${ROOT_URL}/books${API_KEY}`, bookInfo);
-        }else {
+        } else {
           response = await axios.put(`${ROOT_URL}/books${API_KEY}`, bookInfo); // backend request
         }
         set(({ biblioSlice }) => biblioSlice.allBooks.push(response.data)); // update resource for frontend
@@ -55,7 +55,7 @@ export default function createPostSlice(set, get) {
         let response;
         if (fromProfile) {
           response = await axios.put(`${ROOT_URL}/profile/${bookInfo.id}${API_KEY}`, bookInfo);
-        }else{
+        } else {
           response = await axios.put(`${ROOT_URL}/books/${bookInfo.id}${API_KEY}`, bookInfo);
         }
         // replace the post the posts in view - front end logic that filter which books not rendered or show on search
@@ -83,7 +83,7 @@ export default function createPostSlice(set, get) {
       try {
         const response = await axios.get(`${ROOT_URL}/profile${API_KEY}`);
         set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
-      } catch(error) {
+      } catch (error) {
         get().erroSlice.newError(error.message);
       }
     },

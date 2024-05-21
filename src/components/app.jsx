@@ -7,6 +7,7 @@ import Home from './home';
 import Profile from './profile';
 import Login from './login';
 import Signup from './signup';
+import BookModal from './bookModal';
 import UploadBook from './upload_book';
 import DisplayBook from './display_book';
 import UpdateBook from './update_book';
@@ -23,7 +24,8 @@ function App(props) {
       <div>
         <NavBar />
         <Routes>
-          <Route path="/" element={<Signup />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/bookModal" element={<BookModal />} />
           <Route path="/login" element={<Login />} />
           <Route path="/books" element={<Home />} />
           <Route path="/profile" element={<Profile />} />

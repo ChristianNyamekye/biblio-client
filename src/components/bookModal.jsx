@@ -52,7 +52,7 @@ function BookModal() {
               {[1, 2, 3].map((index) => (
                 <Card key={index} shadow="sm" p="lg">
                   <Card.Section>
-                    <Image src={hobbit} alt={`The Hobbit ${index}`} height={120} fit="cover" />
+                    <Image src={hobbit} alt={`The Hobbit ${index}`} height={120} fit="contain" />
                   </Card.Section>
                   <Text size="sm" style={{ marginTop: 10 }}>
                     The Hobbit
@@ -60,6 +60,16 @@ function BookModal() {
                 </Card>
               ))}
             </SimpleGrid>
+            <Group position="left" style={{ width: '100%', marginTop: 20 }}>
+              <Button
+                style={{ borderRadius: '20px' }}
+                variant="filled"
+                color="blue"
+                onClick={() => console.log('Clicked!')}
+              >
+                Trade Now
+              </Button>
+            </Group>
           </div>
         </SimpleGrid>
       </Modal>

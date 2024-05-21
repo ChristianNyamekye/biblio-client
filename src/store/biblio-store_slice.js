@@ -3,11 +3,11 @@ import axios from 'axios';
 const ROOT_URL = '';
 const API_KEY = '?key=biblio';
 
-export default function createPostSlice(set, get) {
+export default function createBookSlice(set, get) {
   return {
     allBooks: [], // all books in our store
     bookInfoToView: {}, // info a single past of a bok
-    userProfileInformation: [],
+    userProfileInformation: {},
 
     // fetches a single book requested by user upon clicking a book in view
     fetchBook: async (bookId, fromProfile) => {
@@ -81,10 +81,10 @@ export default function createPostSlice(set, get) {
 
     fetchUserProfileInfo: async (userId) => {
       try {
-        const response = await axios.get(`${ROOT_URL}/profile${API_KEY}`);
+        const response = await axios.get(`${ROOT_URL}/profile/${userId}`);
         set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
       } catch (error) {
-        get().erroSlice.newError(error.message);
+        get().errorSlice.newError(error.message);
       }
     },
   };

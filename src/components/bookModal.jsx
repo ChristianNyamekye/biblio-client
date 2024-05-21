@@ -3,9 +3,20 @@ import {
   Modal, Image, Text, Group, Badge, Button, SimpleGrid, Card,
 } from '@mantine/core';
 import hobbit from '../assets/hobbit.jpg';
+import TradeModal from './tradeModal';
 
 function BookModal() {
   const [opened, setOpened] = useState(false);
+  const [isTradeModalOpen, setTradeModalOpen] = useState(false);
+  const [username, setUsername] = useState('username5');
+
+  const handleOpenTradeModal = () => {
+    setTradeModalOpen(true);
+  };
+
+  const handleCloseTradeModal = () => {
+    setTradeModalOpen(false);
+  };
 
   return (
     <>
@@ -52,7 +63,7 @@ function BookModal() {
               {[1, 2, 3].map((index) => (
                 <Card key={index} shadow="sm" p="lg">
                   <Card.Section>
-                    <Image src={hobbit} alt={`The Hobbit ${index}`} height={120} fit="cover" />
+                    <Image src={hobbit} alt={`The Hobbit ${index}`} height={120} fit="contain" />
                   </Card.Section>
                   <Text size="sm" style={{ marginTop: 10 }}>
                     The Hobbit
@@ -60,6 +71,17 @@ function BookModal() {
                 </Card>
               ))}
             </SimpleGrid>
+            <Group position="left" style={{ width: '100%', marginTop: 20 }}>
+              <Button
+                style={{ borderRadius: '20px' }}
+                variant="filled"
+                color="blue"
+                onClick={handleOpenTradeModal}
+              >
+                Trade Now
+              </Button>
+              <TradeModal isOpen={isTradeModalOpen} onClose={handleCloseTradeModal} username={username} />
+            </Group>
           </div>
         </SimpleGrid>
       </Modal>

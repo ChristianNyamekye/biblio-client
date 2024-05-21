@@ -36,8 +36,8 @@ function Signup() {
           <Text size="sm" align="center" mb="lg">
             Already Have An Account? <Anchor href="/login" size="sm">Log In</Anchor>
           </Text>
-          <TextInput label="First name" required />
-          <TextInput label="Last name" required />
+          <TextInput label="Full name" required />
+          <TextInput label="username" required />
           <TextInput label="Email address" required type="email" />
           <TextInput label="Password" required type="password" description="Your password needs to be at least 8 characters." />
           <Button fullWidth mt="lg">

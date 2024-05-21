@@ -1,13 +1,22 @@
 import axios from 'axios';
 
-const ROOT_URL = '';
+const ROOT_URL = 'google.com';
 const API_KEY = '?key=biblio';
 
 export default function createBookSlice(set, get) {
   return {
     allBooks: [], // all books in our store
-    bookInfoToView: {}, // info a single past of a bok
+    bookInfoToView: {}, // info a single past of a book
     userProfileInformation: {},
+
+    createUser: async (userInfo) => {
+      try {
+        const response = await axios.get(`${ROOT_URL}/create-user`, userInfo);
+        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/createUser');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
 
     // fetches a single book requested by user upon clicking a book in view
     fetchBook: async (bookId, fromProfile) => {

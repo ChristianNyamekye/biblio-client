@@ -8,6 +8,7 @@ import TradeModal from './tradeModal';
 function BookModal() {
   const [opened, setOpened] = useState(false);
   const [isTradeModalOpen, setTradeModalOpen] = useState(false);
+  const [username, setUsername] = useState('username5');
 
   const handleOpenTradeModal = () => {
     setTradeModalOpen(true);
@@ -79,7 +80,7 @@ function BookModal() {
               >
                 Trade Now
               </Button>
-              <TradeModal isOpen={isTradeModalOpen} onClose={handleCloseTradeModal} />
+              <TradeModal isOpen={isTradeModalOpen} onClose={handleCloseTradeModal} username={username} />
             </Group>
           </div>
         </SimpleGrid>

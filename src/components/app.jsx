@@ -4,7 +4,7 @@ import {
 } from 'react-router-dom';
 import NavBar from './nav-bar';
 import Home from './home';
-import Profile from './profile';
+import Profile from './profile/profile';
 import Login from './login';
 import Signup from './signup';
 import UploadBook from './upload_book';

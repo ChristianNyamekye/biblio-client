@@ -12,7 +12,7 @@ function NavBar() {
       <div className="menu-items">
         <ul>
           <li><a href="/login">Login</a></li>
-          <li><a href="/">Home</a></li>
+          <li><a href="/home">Home</a></li>
           <li><a href="/how-it-works">How It Works</a></li>
           <li><a href="/profile">Profile</a></li>
         </ul>

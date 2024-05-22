@@ -28,7 +28,7 @@ function App(props) {
           <Route path="/signup" element={<Signup />} />
           <Route path="/bookModal" element={<BookModal />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/books" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
           <Route path="/onboarding" element={<Onboarding />} />

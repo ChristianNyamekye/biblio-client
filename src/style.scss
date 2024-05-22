@@ -5,13 +5,15 @@ html {
   height: 100%;
   margin:0;
 }
-:root {
-  text-size-adjust: 100%;
-}
+// :root {
+//   text-size-adjust: 100%;
+// }
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #EEF9FF;
+  z-index: -1;
 }
 .brand-header{
   font-family: "Poppins", sans-serif;

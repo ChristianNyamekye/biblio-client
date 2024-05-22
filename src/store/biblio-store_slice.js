@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const ROOT_URL = 'https://project-api-biblio.onrender.com/';
+const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
 const API_KEY = '?key=biblio';
 
 export default function createBookSlice(set, get) {
@@ -11,8 +11,30 @@ export default function createBookSlice(set, get) {
 
     createUser: async (userInfo) => {
       try {
-        const response = await axios.get(`${ROOT_URL}/create-user`, userInfo);
+        console.log('user info', userInfo);
+        const response = await axios.post(`${ROOT_URL}/register`, userInfo);
+        console.log('user response', response.data);
         set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/createUser');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
+    loginUser: async (userInfo) => {
+      try {
+        const response = await axios.post(`${ROOT_URL}/login`, userInfo);
+        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/loginUser');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
+    fetchUser: async (userId) => {
+      try {
+        console.log('fetching id', userId);
+        const response = await axios.get(`${ROOT_URL}/users/${userId}`);
+        console.log('fetching response', response);
+        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/fetchProfile');
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -88,13 +110,13 @@ export default function createBookSlice(set, get) {
       }
     },
 
-    fetchUserProfileInfo: async (userId) => {
-      try {
-        const response = await axios.get(`${ROOT_URL}/profile/${userId}`);
-        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
-      } catch (error) {
-        get().errorSlice.newError(error.message);
-      }
-    },
+    // fetchUserProfileInfo: async (userId) => {
+    //   try {
+    //     const response = await axios.get(`${ROOT_URL}/profile/${userId}`);
+    //     set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
+    //   } catch (error) {
+    //     get().errorSlice.newError(error.message);
+    //   }
+    // },
   };
 }

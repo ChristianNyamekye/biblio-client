@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
-import { Button, Avatar } from '@mantine/core';
+import React, { useState, useEffect } from 'react';
+import { Button, Avatar, Text } from '@mantine/core';
 import {
   IconBooks, IconArrowRight, IconHeart, IconSettings, IconReplace,
 } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
+import { useParams } from 'react-router-dom';
 import Library from './library';
 import Wishlist from './wishlist';
 import ActiveOffers from './active-offers';
 import Settings from './settings';
+import useStore from '../../store';
 
 function Profile() {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('library');
+  const { userId } = useParams();
+
+  const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+
+  useEffect(() => {
+    fetchUser(userId);
+  }, []);
+
+  console.log('profile', currUser.name);
+  console.log('user id', userId);
 
   const handleBookSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -32,10 +45,20 @@ function Profile() {
     }
   };
 
+  const getInitials = (name) => {
+    if (!name) return '';
+
+    const nameParts = name.split(' ');
+    const initials = nameParts.map((part) => part.charAt(0).toUpperCase()).join('');
+
+    return initials;
+  };
+
   return (
     <div className="profile">
       <div className="left-dash">
-        <Avatar color="indigo" size="lg" radius="xl" mb="lg">JP</Avatar>
+        <Avatar color="indigo" size="lg" radius="xl" mb="lg">{getInitials(currUser.name)}</Avatar>
+        <Text size="xl" mb="lg">Welcome, {currUser.name}</Text>
         <Button
           fullWidth
           variant="light"

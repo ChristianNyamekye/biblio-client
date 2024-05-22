@@ -2,6 +2,7 @@ import React from 'react';
 import {
   BrowserRouter, Routes, Route,
 } from 'react-router-dom';
+import { BackgroundImage } from '@mantine/core';
 import NavBar from './nav-bar';
 import Home from './home';
 import Profile from './profile/profile';

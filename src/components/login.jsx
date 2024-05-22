@@ -1,12 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  TextInput, Button, Checkbox, Group, Paper, Title, Text,
+  TextInput, Button, Paper, Title, Text,
 } from '@mantine/core';
-import {
-  IconBrandApple, IconBrandFacebook, IconBrandSpotify, IconBrandGoogle,
-} from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import useStore from '../store';
 
 function Login() {
+  const loginUser = useStore(({ biblioSlice }) => biblioSlice.loginUser);
+
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+  console.log('login', currUser);
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const onClickLogin = async () => {
+    await loginUser({ email, password });
+    setIsUserLoggedIn(true);
+    console.log('logging in user');
+  };
+
+  useEffect(() => {
+    if (isUserLoggedIn && currUser.user.id) {
+      navigate(`/profile/${currUser.user.id}`);
+    }
+  }, [isUserLoggedIn, currUser, navigate]);
+
   return (
     <Paper radius="md"
       p="xl"
@@ -19,6 +48,7 @@ function Login() {
         Log in
       </Title>
       <TextInput
+        onChange={handleEmailChange}
         label="Email address"
         placeholder="Enter your email"
         required
@@ -26,22 +56,25 @@ function Login() {
         mb="md"
       />
       <TextInput
+        onChange={handlePasswordChange}
         label="Password"
         placeholder="Enter your password"
         required
         type="password"
         mb="md"
       />
-      <Button fullWidth mt="md" mb="md">Log in</Button>
-      {/* <Group position="center" mt="md" mb="xl">
-        <Button variant="default" radius="xl"><IconBrandApple size={24} /></Button>
-        <Button variant="default" radius="xl"><IconBrandFacebook size={24} /></Button>
-        <Button variant="default" radius="xl"><IconBrandGoogle size={24} /></Button>
-      </Group> */}
-      <Text align="center" size="sm">
-        {/* New to Biblio? <Text component="a" href="/signup" size="sm" weight={500} color="yellow">Sign up here!</Text> */}
-        New to Biblio? <Text component="a" href="/bookModal" size="sm" weight={500} color="yellow">Sign up here!</Text>
+      <Button
+        fullWidth
+        mt="md"
+        mb="md"
+        color="indigo"
+        onClick={onClickLogin}
+      >
+        Log in
+      </Button>
 
+      <Text align="center" size="sm">
+        New to Biblio? <Text component="a" href="/bookModal" size="sm" weight={500} color="indigo">Sign up here!</Text>
       </Text>
     </Paper>
   );

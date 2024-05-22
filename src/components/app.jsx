@@ -27,8 +27,8 @@ function App(props) {
           <Route path="/signup" element={<Signup />} />
           <Route path="/bookModal" element={<BookModal />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/books" element={<Home />} />
+          <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
 
           {/* allow user to upload from the user profile or home page */}

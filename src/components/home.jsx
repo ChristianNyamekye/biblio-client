@@ -1,18 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Autocomplete, Select, Text, Group, Title, Container, Loader, Button,
+  Autocomplete, Select, Title, Container, Loader, Button,
 } from '@mantine/core';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
-import useStore from '../store';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [lastSearchTerm, setLastSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [bookToRender, setbookToRender] = useState({});
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
@@ -29,16 +26,12 @@ function Home() {
     debounce(async (query) => {
       if (!query) return;
       setLoading(true);
-      setError(null);
       try {
-        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/search', {
+        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/G-api/search', {
           params: { query },
         });
         const uniqueBooks = filterUniqueBooks(response.data.items || []);
         setSearchResults(uniqueBooks);
-      } catch (err) {
-        setError('Error fetching books as user searches');
-        setSearchResults([]);
       } finally {
         setLoading(false);
       }
@@ -51,16 +44,13 @@ function Home() {
   }, [searchTerm]);
 
   const handleSubmit = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      setError(null);
-      const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-        params: { q: `intitle:${lastSearchTerm}` },
+      const response = await axios.get('https://project-api-biblio.onrender.com/api/books/G-api/fetchBook', {
+        params: { title: `intitle:${lastSearchTerm}` },
       });
       const book = response.data.items[0];
       console.log(`RESULTS: ${JSON.stringify(book)}`);
-    } catch (err) {
-      setError('Error fetching book');
     } finally {
       setLoading(false);
     }
@@ -71,33 +61,30 @@ function Home() {
       <Title order={2} align="center" style={{ marginBottom: '20px' }}>
         Explore a New Book Trade
       </Title>
-      <Group style={{ display: 'flex', gap: '10px' }}>
-        <Select
-          label="Search By"
-          placeholder="Filter"
-          data={['Genre', 'Author', 'Condition', 'Length']}
-          style={{ flex: 1 }}
-        />
-        <Autocomplete
-          label="Find Book"
-          placeholder="Enter Title or Author"
-          data={searchResults.map((book) => ({
-            value: book.volumeInfo.title,
-            label: book.volumeInfo.title,
-            description: book.volumeInfo.authors?.join(', '),
-          }))}
-          style={{ flex: 3 }}
-          onChange={(value) => { setSearchTerm(value); setLastSearchTerm(value); }}
-          rightSection={loading ? <Loader size="sm" /> : null}
-        />
-        <Button
-          onClick={handleSubmit}
-          disabled={loading}
-          style={{ flex: 1 }}
-        >
-          Submit
-        </Button>
-      </Group>
+      <Select
+        label="Search By"
+        placeholder="Filter"
+        data={['Genre', 'Author', 'Condition', 'Length']}
+        style={{ marginBottom: '20px' }}
+      />
+      <Autocomplete
+        label="Find Book"
+        placeholder="Enter Title"
+        data={searchResults.map((book) => ({
+          value: book.volumeInfo.title,
+          label: book.volumeInfo.title,
+          description: book.volumeInfo.authors?.join(', '),
+        }))}
+        onChange={(value) => { setSearchTerm(value); setLastSearchTerm(value); }}
+        rightSection={loading ? <Loader size="sm" /> : null}
+      />
+      <Button
+        onClick={handleSubmit}
+        disabled={loading}
+        style={{ marginTop: '20px' }}
+      >
+        Submit
+      </Button>
     </Container>
   );
 }

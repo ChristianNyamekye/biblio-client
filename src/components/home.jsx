@@ -10,6 +10,7 @@ function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [lastSearchTerm, setLastSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [bookToRender, setbookToRender] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -47,28 +48,22 @@ function Home() {
 
   useEffect(() => {
     fetchBooks(searchTerm);
-  }, [searchTerm, fetchBooks]);
+  }, [searchTerm]);
 
   const handleSubmit = async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await axios.get('https://www.googleapis.com/books/v1/volumes', {
-        params: { q: `intitle:${lastSearchTerm}` }, // use the last search after clicking submit
+        params: { q: `intitle:${lastSearchTerm}` },
       });
-      const book = response.data.items[0]; // fetch first in the list
+      const book = response.data.items[0];
       console.log(`RESULTS: ${JSON.stringify(book)}`);
     } catch (err) {
       setError('Error fetching book');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleSearchTermChange = (value) => {
-    setSearchTerm(value);
-    console.log(`last search term ${value}`);
-    setLastSearchTerm(value);
   };
 
   return (
@@ -92,12 +87,13 @@ function Home() {
             description: book.volumeInfo.authors?.join(', '),
           }))}
           style={{ flex: 3 }}
-          onChange={handleSearchTermChange}
+          onChange={(value) => { setSearchTerm(value); setLastSearchTerm(value); }}
           rightSection={loading ? <Loader size="sm" /> : null}
         />
         <Button
           onClick={handleSubmit}
           disabled={loading}
+          style={{ flex: 1 }}
         >
           Submit
         </Button>

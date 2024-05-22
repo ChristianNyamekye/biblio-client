@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   TextInput,
   Button,
@@ -9,6 +9,7 @@ import {
   Anchor,
   Container,
 } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 
 function Signup() {
@@ -16,8 +17,12 @@ function Signup() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const [isUserCreated, setIsUserCreated] = useState(false);
 
   const createUser = useStore(({ biblioSlice }) => biblioSlice.createUser);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+  console.log('signup', currUser);
 
   const handleNameChange = (e) => {
     setName(e.target.value);
@@ -35,12 +40,19 @@ function Signup() {
     setPassword(e.target.value);
   };
 
-  const onClickRegister = () => {
-    createUser({
+  const onClickRegister = async () => {
+    await createUser({
       name, username, email, password,
     });
+    setIsUserCreated(true);
     console.log('creating user');
   };
+
+  useEffect(() => {
+    if (isUserCreated && currUser.id) {
+      navigate(`/profile/${currUser.id}`);
+    }
+  }, [isUserCreated, currUser, navigate]);
 
   return (
     <Container size={800} style={{ paddingTop: '5vh' }}>

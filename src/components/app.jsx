@@ -24,15 +24,13 @@ function App(props) {
       <div>
         <NavBar />
         <Routes>
+          <Route path="/" element={<Signup />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/bookModal" element={<BookModal />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/books" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
-
-          {/* allow user to upload from the user profile or home page */}
-          <Route path="/profile/upload" element={<UploadBook />} />
 
           {/* allow user to view more about their book or other books in their profile */}
           <Route path="/books/:bookID" element={<DisplayBook />} />

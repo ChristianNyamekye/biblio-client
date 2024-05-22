@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Avatar } from '@mantine/core';
+import { Button, Avatar, Text } from '@mantine/core';
 import {
   IconBooks, IconArrowRight, IconHeart, IconSettings, IconReplace,
 } from '@tabler/icons-react';
@@ -45,10 +45,20 @@ function Profile() {
     }
   };
 
+  const getInitials = (name) => {
+    if (!name) return '';
+
+    const nameParts = name.split(' ');
+    const initials = nameParts.map((part) => part.charAt(0).toUpperCase()).join('');
+
+    return initials;
+  };
+
   return (
     <div className="profile">
       <div className="left-dash">
-        <Avatar color="indigo" size="lg" radius="xl" mb="lg">JP</Avatar>
+        <Avatar color="indigo" size="lg" radius="xl" mb="lg">{getInitials(currUser.name)}</Avatar>
+        <Text size="xl" mb="lg">Welcome, {currUser.name}</Text>
         <Button
           fullWidth
           variant="light"

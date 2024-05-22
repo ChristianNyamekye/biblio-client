@@ -12,6 +12,7 @@ import UploadBook from './upload_book';
 import DisplayBook from './display_book';
 import UpdateBook from './update_book';
 import Education from './education';
+import Onboarding from './onboarding';
 import '@mantine/core/styles.css';
 
 function FallBack(props) {
@@ -30,6 +31,7 @@ function App(props) {
           <Route path="/books" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
+          <Route path="/onboarding" element={<Onboarding />} />
 
           {/* allow user to upload from the user profile or home page */}
           <Route path="/profile/upload" element={<UploadBook />} />

@@ -2,12 +2,14 @@ import React from 'react';
 import {
   BrowserRouter, Routes, Route,
 } from 'react-router-dom';
+import { BackgroundImage } from '@mantine/core';
 import NavBar from './nav-bar';
 import Home from './home';
 import Profile from './profile/profile';
 import Login from './login';
 import Signup from './signup';
 import BookModal from './bookModal';
+import responseModal from './responseModal';
 import UploadBook from './upload_book';
 import DisplayBook from './display_book';
 import UpdateBook from './update_book';

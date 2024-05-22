@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom'; // Using Link for client-side routing
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import useStore from '../store';
 

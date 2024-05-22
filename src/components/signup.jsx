@@ -5,13 +5,14 @@ import {
   Paper,
   Title,
   Text,
-  Group,
+  BackgroundImage,
   Anchor,
   Container,
   Box,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
+import bookshelf from '../assets/background.png';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -43,16 +44,27 @@ function Signup() {
   };
 
   return (
-    <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-    }}
+    <BackgroundImage
+      src={bookshelf}
+      radius="sm"
+      style={{
+        width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+      }}
     >
-      <Container size={1000}
+      <Box style={{ maxWidth: '100%', marginTop: '3%' }}>
+        <Title order={1}
+          style={{
+            fontSize: '36px', marginBottom: '20px', textAlign: 'center', color: '#3F6BB4',
+          }}
+        >Swap stories, Share Worlds
+        </Title>
+      </Box>
+      <Container size={1200}
         style={{
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '50px',
+          display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '50px', marginLeft: '40%',
         }}
       >
-        <Box style={{ maxWidth: '35%' }}>
+        <Box style={{ maxWidth: '45%', marginRight: '5%' }}>
           <Title order={1} style={{ fontSize: '26px', marginBottom: '10px' }}>Join Bibilio today!</Title>
           <Text style={{ marginBottom: '20px' }}>Build community, read more, and save money.</Text>
           <ul>
@@ -61,7 +73,16 @@ function Signup() {
             <li>Do your part to be sustainable.</li>
           </ul>
         </Box>
-        <Paper radius="md" p="xl" withBorder style={{ minWidth: '30%', padding: '40px', backgroundColor: '#ffffff' }}>
+        <Paper radius="md"
+          p="xl"
+          withBorder
+          style={{
+            flexGrow: 1,
+            maxWidth: '90%',
+            padding: '50px',
+            backgroundColor: '#ffffff',
+          }}
+        >
           <Title order={2} align="center" style={{ marginBottom: '20px' }}>Sign up</Title>
           <Text size="sm" align="center" mb="lg">Already Have An Account? <Anchor href="/login" size="sm">Log In</Anchor></Text>
           <TextInput onChange={handleNameChange} label="Full name" required />
@@ -71,7 +92,7 @@ function Signup() {
           <Button onClick={onClickRegister} fullWidth mt="lg" color="blue">Create an account</Button>
         </Paper>
       </Container>
-    </div>
+    </BackgroundImage>
   );
 }
 

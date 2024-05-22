@@ -74,7 +74,7 @@ function Login() {
       </Button>
 
       <Text align="center" size="sm">
-        New to Biblio? <Text component="a" href="/bookModal" size="sm" weight={500} color="indigo">Sign up here!</Text>
+        New to Biblio? <Text component="a" href="/signup" size="sm" weight={500} color="indigo">Sign up here!</Text>
       </Text>
     </Paper>
   );

@@ -1,7 +1,11 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
+import useStore from '../store';
 
 function NavBar() {
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+
   return (
     <nav className="navbar">
 
@@ -11,10 +15,20 @@ function NavBar() {
       </div>
       <div className="menu-items">
         <ul>
-          <li><a href="/login">Login</a></li>
-          <li><a href="/home">Home</a></li>
-          <li><a href="/how-it-works">How It Works</a></li>
-          <li><a href="/profile">Profile</a></li>
+          {currUser && currUser.id ? (
+            <>
+              <li><Link to="/home">Home</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+              <li><Link to={`/profile/${currUser.id}`}>Profile</Link></li>
+            </>
+          ) : (
+            <>
+              <li><Link to="/login">Login</Link></li>
+              <li><Link to="/signup">Sign Up</Link></li>
+              <li><Link to="/how-it-works">How It Works</Link></li>
+            </>
+          )}
+
         </ul>
       </div>
     </nav>

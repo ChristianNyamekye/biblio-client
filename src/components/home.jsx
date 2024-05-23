@@ -27,7 +27,7 @@ function Home() {
       if (!query) return;
       setLoading(true);
       try {
-        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/G-api/search', {
+        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/search', {
           params: { query },
         });
         const uniqueBooks = filterUniqueBooks(response.data.items || []);
@@ -46,10 +46,10 @@ function Home() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://project-api-biblio.onrender.com/api/books/G-api/fetchBook', {
+      const response = await axios.get('https://project-api-biblio.onrender.com/api/books/fetchBook', {
         params: { title: `intitle:${lastSearchTerm}` },
       });
-      const book = response.data.items[0];
+      const book = response.data;
       console.log(`RESULTS: ${JSON.stringify(book)}`);
     } finally {
       setLoading(false);

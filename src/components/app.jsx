@@ -14,6 +14,7 @@ import UploadBook from './upload_book';
 import DisplayBook from './display_book';
 import UpdateBook from './update_book';
 import Education from './education';
+import Onboarding from './onboarding';
 import '@mantine/core/styles.css';
 
 function FallBack(props) {
@@ -33,6 +34,7 @@ function App(props) {
           <Route path="/home" element={<Home />} />
           <Route path="/profile/:userId" element={<Profile />} />
           <Route path="/how-it-works" element={<Education />} />
+          <Route path="/onboarding" element={<Onboarding />} />
           <Route path="*" element={<FallBack />} />
         </Routes>
       </div>

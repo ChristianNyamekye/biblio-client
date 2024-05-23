@@ -1,13 +1,16 @@
 body,
 html {
   font-family: "Poppins", sans-serif;
-  background: white;
+  background: rgb(255, 255, 255);
+  z-index: -1;
+  // background-image:"../assets/background.png";
   height: 100%;
   margin:0;
 }
 // :root {
 //   text-size-adjust: 100%;
 // }
+
 .navbar {
   display: flex;
   align-items: center;
@@ -27,6 +30,7 @@ html {
 .logo{
   width: 40px;
   margin-right: 10px;
+  color: #3F6BB4;
 }
 .menu-items{
   margin-right: 20px;

@@ -12,7 +12,7 @@ function Footer() {
       <div className="menu-items">
         <ul>
           <li><Link to="/how-it-works">About</Link></li>
-          <li><Link to="#">Security</Link></li>
+          <li><Link to="#">Privacy</Link></li>
           <li><Link to="#">Contact</Link></li>
         </ul>
       </div>

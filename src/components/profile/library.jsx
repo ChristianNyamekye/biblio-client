@@ -2,9 +2,7 @@ import React from 'react';
 import {
   Text, Button, Avatar, Modal, Autocomplete,
 } from '@mantine/core';
-import {
-  IconBooks, IconArrowRight, IconHeart, IconSettings, IconCirclePlus, IconReplace,
-} from '@tabler/icons-react';
+import { IconCirclePlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 
 function Library() {

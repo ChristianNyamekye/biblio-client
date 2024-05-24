@@ -82,6 +82,7 @@ function Home() {
         />
         <Button
           onClick={handleSubmit}
+          color="indigo"
           disabled={loading}
           style={{ flex: 1, marginTop: '20px' }}
         >

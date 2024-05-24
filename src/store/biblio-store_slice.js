@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+// const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+const ROOT_URL = 'http://localhost:5173/api';
 const API_KEY = '?key=biblio';
 
 export default function createBookSlice(set, get) {

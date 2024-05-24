@@ -35,10 +35,10 @@ function Library({ userId }) {
       const fetchBooks = async () => {
         try {
           const response = await axios.get(
-            'http://localhost:9090/api/books/search',
+            "https://project-api-biblio.onrender.com/api/books/search",
             {
               params: { query: searchTerm },
-            },
+            }
           );
           const uniqueBooks = filterUniqueBooks(response.data.items || []);
           setSearchResults(uniqueBooks); // Ensure searchResults is always an array
@@ -74,10 +74,13 @@ function Library({ userId }) {
         };
         console.log('userid:', userId);
         console.log('details:', bookDetails);
-        const response = await axios.post('http://localhost:9090/api/books', {
-          userId,
-          bookDetails,
-        });
+        const response = await axios.post(
+          "https://project-api-biblio.onrender.com/api/books",
+          {
+            userId,
+            bookDetails,
+          }
+        );
         console.log('Book added:', response.data);
         close();
       } catch (error) {

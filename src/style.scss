@@ -1,32 +1,38 @@
-body,
-html {
+html, body {
   font-family: "Poppins", sans-serif;
-  background: white;
-  height: 100%;
-  margin:0;
+  background: rgb(255, 255, 255);
+  height: 100%; 
+  margin: 0;   
 }
 // :root {
 //   text-size-adjust: 100%;
 // }
+#root, .App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #EEF9FF;
-  z-index: -1;
+  background-color: #ECF0FE;
+  z-index: 1000;
+  padding: 2vh;
 }
 .brand-header{
   font-family: "Poppins", sans-serif;
   font-weight: 600;
-  font-size: 35px;
+  font-size: 30px;
   padding: 0px 30px;
   display: flex;
   align-items: center;
   color: #4C6EF5;
 }
-.logo{
-  width: 40px;
+.logo {
+  width: 30px;
   margin-right: 10px;
+  color: #3F6BB4;
 }
 .menu-items{
   margin-right: 20px;
@@ -34,23 +40,25 @@ html {
 .navbar ul {
   list-style-type: none;
   overflow: hidden;
+  padding: 0;
+  margin: 0;
 }
 .navbar li {
-  float: left;
+  display: inline-block;
 }
 .navbar li a {
   display: block;
-  color: #4C6EF5;  
+  color: #4C6EF5;
   text-align: center;
   padding: 8px 16px;
   text-decoration: none;
 }
 .navbar li a:hover {
-  background-color: #ECF0FE;
+  background-color: #DBE4FF;
   border-radius: 8px;
 }
 .profile{
-  background-color: rgb(239, 239, 239);
+  background-color: #F8F9FA;
   height: 100vh;
   padding: 10px 10px;
   display: flex;
@@ -67,7 +75,6 @@ html {
   margin-right: 10px;
 }
 .center-dash{
-  // background-color: red;
   width: 80%;
   border-radius: 20px;
   margin-right: 0px;
@@ -93,4 +100,45 @@ html {
   width: 25%;
   height: 100%;
   padding: 10px 20px;
+}
+.foot {
+  position: relative;
+  background-color: #ECF0FE;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2vh;
+  flex-shrink: 0;
+}
+.foot ul {
+  list-style-type: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+.foot li {
+  display: inline-block;
+}
+.foot li a {
+  display: block;
+  color: #4C6EF5;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+.small-brand-header {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  color: #4C6EF5;
+  font-size: 30px;
+  padding: 0 30px;
+}
+.small-logo {
+  width: 30px;
+  margin-right: 7px;
+}
+main {
+  flex-grow: 1; 
+  overflow: auto;
 }

@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Autocomplete, Select, Text, Group, Title, Container,
+  Autocomplete, Select, Title, Container, Loader, Button, Group,
 } from '@mantine/core';
 import axios from 'axios';
-import useStore from '../store';
+import debounce from 'lodash.debounce';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [lastSearchTerm, setLastSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
@@ -20,25 +22,39 @@ function Home() {
     });
   };
 
+  const fetchBooks = useCallback(
+    debounce(async (query) => {
+      if (!query) return;
+      setLoading(true);
+      try {
+        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/search', {
+          params: { query },
+        });
+        const uniqueBooks = filterUniqueBooks(response.data.items || []);
+        setSearchResults(uniqueBooks);
+      } finally {
+        setLoading(false);
+      }
+    }, 300),
+    [],
+  );
+
   useEffect(() => {
-    if (searchTerm) {
-      console.log('Fetching books for:', searchTerm);
-      const fetchBooks = async () => {
-        try {
-          const response = await axios.get('https://project-api-biblio.onrender.com/api/books/search', {
-            params: { query: searchTerm },
-          });
-          const uniqueBooks = filterUniqueBooks(response.data.items || []);
-          setSearchResults(uniqueBooks); // Ensure searchResults is always an array
-        } catch (error) {
-          setSearchResults([]); // Set to empty array on error
-        }
-      };
-      fetchBooks();
-    } else {
-      setSearchResults([]); // Reset when search term is empty
-    }
+    fetchBooks(searchTerm);
   }, [searchTerm]);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get('https://project-api-biblio.onrender.com/api/books/fetchBook', {
+        params: { title: `intitle:${lastSearchTerm}` },
+      });
+      const book = response.data;
+      console.log(`RESULTS: ${JSON.stringify(book)}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Container style={{ width: '75vw', margin: '0 auto', paddingTop: '5vh' }}>
@@ -60,9 +76,18 @@ function Home() {
             label: book.volumeInfo.title,
             description: book.volumeInfo.authors?.join(', '),
           }))}
+          onChange={(value) => { setSearchTerm(value); setLastSearchTerm(value); }}
+          rightSection={loading ? <Loader size="sm" /> : null}
           style={{ flex: 3 }}
-          onChange={(value) => setSearchTerm(value)}
         />
+        <Button
+          onClick={handleSubmit}
+          color="indigo"
+          disabled={loading}
+          style={{ flex: 1, marginTop: '20px' }}
+        >
+          Submit
+        </Button>
       </Group>
     </Container>
   );

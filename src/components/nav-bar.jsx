@@ -8,11 +8,10 @@ function NavBar() {
 
   return (
     <nav className="navbar">
-
-      <div className="brand-header">
+      <Link to="/" className="brand-header" style={{ textDecoration: 'none' }}>
         <img className="logo" src={logo} alt="biblio logo" />
         biblio
-      </div>
+      </Link>
       <div className="menu-items">
         <ul>
           {currUser && currUser.id ? (

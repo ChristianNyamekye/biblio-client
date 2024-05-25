@@ -2,29 +2,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Text, Group, Title, Container, Stack, Button, List, ThemeIcon, rem,
+  Text, Group, Title, Container, Stack, Button, List, ThemeIcon, rem, Box, Image,
 } from '@mantine/core';
 import {
   IconArrowRight, IconUserSearch, IconUserCircle, IconCheck,
 } from '@tabler/icons-react';
+import onboardImage from '../assets/onboarding.png';
 
 function Onboarding() {
   return (
-    <Container style={{
-      paddingTop: '10vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
-    }}
+    <Container size="lg"
+      style={{
+        paddingTop: '10vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+      }}
     >
       <Group
         align="center"
+        noWrap
         style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%',
         }}
       >
         <Stack
           align="stretch"
           justify="center"
-          gap="lg"
-          style={{ width: '61%' }}
+          spacing="lg"
+          style={{ width: '55%' }}
         >
           <Title>
             Trade, Discover, and Connect over books with ease
@@ -37,7 +40,7 @@ function Onboarding() {
             size="sm"
             icon={(
               <ThemeIcon color="indigo" size={20} radius="xl">
-                <IconCheck style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
+                <IconCheck style={{ width: '12px', height: '12px' }} stroke={1.5} />
               </ThemeIcon>
             )}
           >
@@ -50,7 +53,7 @@ function Onboarding() {
             <Link to="/login">
               <Button
                 color="indigo"
-                leftSection={<IconUserSearch size={18} />}
+                leftIcon={<IconUserSearch size={18} />}
               >
                 Login
               </Button>
@@ -58,8 +61,8 @@ function Onboarding() {
             <Link to="/signup">
               <Button
                 variant="light"
-                leftSection={<IconUserCircle size={18} />}
-                rightSection={<IconArrowRight size={18} />}
+                leftIcon={<IconUserCircle size={18} />}
+                rightIcon={<IconArrowRight size={18} />}
                 color="indigo"
               >
                 Sign Up
@@ -67,6 +70,12 @@ function Onboarding() {
             </Link>
           </Group>
         </Stack>
+        <Box style={{
+          display: 'flex', justifyContent: 'center', alignItems: 'center', width: '40%',
+        }}
+        >
+          <Image src={onboardImage} alt="Centered About Image" style={{ maxWidth: '100%', height: 'auto' }} />
+        </Box>
       </Group>
     </Container>
   );

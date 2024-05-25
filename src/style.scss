@@ -142,3 +142,30 @@ main {
   flex-grow: 1; 
   overflow: auto;
 }
+.faq-title{
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  margin-top: 4hv;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4C6EF5;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.accordion-item:hover {
+  background-color: #d0d0d0;
+  cursor: pointer;
+}
+.how-it-works-title{
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 30px;
+  margin-top: 4hv;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #4C6EF5;
+  padding-top: 50px;
+}

@@ -15,15 +15,14 @@ function Profile() {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('library');
-  // const { userId } = useParams();
+  const { userId } = useParams();
 
   const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
-  // useEffect(() => {
-  //   fetchUser(userId);
-  // }, []);
-  const userId = '664d22e03acbfc66d3c7beca';
+  useEffect(() => {
+    fetchUser(userId);
+  }, []);
   console.log('profile', currUser.name);
   console.log('user id', userId);
 

@@ -1,11 +1,13 @@
-
-import React, { useState, useEffect }, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   Text,
   Button,
   Modal,
   Select,
+  Card,
+  Image,
+  SimpleGrid,
   Autocomplete,
   Group,
 } from '@mantine/core';
@@ -41,7 +43,8 @@ const sampleBooks = [
 ];
 
 function Library({ userId }) {
-  const [addBookOpened, { open: openAddBook, close: closeAddBook }] = useDisclosure(false);
+  // const [addBookOpened, { open: openAddBook, close: closeAddBook }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -63,10 +66,10 @@ function Library({ userId }) {
       const fetchBooks = async () => {
         try {
           const response = await axios.get(
-            "https://project-api-biblio.onrender.com/api/books/search",
+            'https://project-api-biblio.onrender.com/api/books/search',
             {
               params: { query: searchTerm },
-            }
+            },
           );
           const uniqueBooks = filterUniqueBooks(response.data.items || []);
           setSearchResults(uniqueBooks); // Ensure searchResults is always an array
@@ -103,14 +106,15 @@ function Library({ userId }) {
         console.log('userid:', userId);
         console.log('details:', bookDetails);
         const response = await axios.post(
-          "https://project-api-biblio.onrender.com/api/books",
+          'https://project-api-biblio.onrender.com/api/books',
+          // 'http://localhost:9090/api/books',
           {
             userId,
             bookDetails,
-          }
+          },
         );
         console.log('Book added:', response.data);
-        close();
+        // close();
       } catch (error) {
         console.error('Error adding book:', error);
       }
@@ -119,7 +123,7 @@ function Library({ userId }) {
     }
   };
   const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
-  const [selectedBook, setSelectedBook] = useState(null);
+  // const [selectedBook, setSelectedBook] = useState(null);
 
   const handleViewBook = (book) => {
     setSelectedBook(book);
@@ -165,7 +169,8 @@ function Library({ userId }) {
         </Text>
         <Button
           color="indigo"
-          onClick={openAddBook}
+          // onClick={openAddBook}
+          onClick={open}
           rightSection={<IconCirclePlus size={18} />}
         >
           Add Book

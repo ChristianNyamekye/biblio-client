@@ -9,10 +9,12 @@ import {
   Anchor,
   Container,
   Box,
+  Image,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 import bookshelf from '../assets/background.png';
+import signImage from '../assets/sign-up.png';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -44,34 +46,36 @@ function Signup() {
   };
 
   return (
-    <BackgroundImage
-      src={bookshelf}
-      radius="sm"
+    <Container size="lg"
       style={{
-        width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+        paddingTop: '5vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <Box style={{ maxWidth: '100%', marginTop: '3%' }}>
-        <Title order={1}
-          style={{
-            fontSize: '36px', marginBottom: '20px', textAlign: 'center', color: '#4C6EF5',
-          }}
-        >Swap stories, Share Worlds
-        </Title>
+      <Box style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <Title order={1} style={{ fontSize: '30px', marginBottom: '10px' }}>Join bibilio today!</Title>
+        <Text>Build community, read more, and save money.</Text>
       </Box>
       <Container size={1200}
         style={{
-          display: 'flex', justifyContent: 'flex-end', alignItems: 'center', padding: '50px', marginLeft: '40%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: '50px',
         }}
       >
-        <Box style={{ maxWidth: '45%', marginRight: '5%' }}>
-          <Title order={1} style={{ fontSize: '26px', marginBottom: '10px' }}>Join Bibilio today!</Title>
-          <Text style={{ marginBottom: '20px' }}>Build community, read more, and save money.</Text>
-          <ul>
-            <li>Thousands of books to choose from.</li>
-            <li>Discover stories you never knew about.</li>
-            <li>Do your part to be sustainable.</li>
-          </ul>
+        <Box style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '40%',
+          marginRight: '100px',
+        }}
+        >
+          <Image src={signImage} alt="Centered About Image" style={{ maxWidth: '100%', height: 'auto' }} />
         </Box>
         <Paper radius="md"
           p="xl"
@@ -92,7 +96,7 @@ function Signup() {
           <Button onClick={onClickRegister} fullWidth mt="lg" color="indigo">Create an account</Button>
         </Paper>
       </Container>
-    </BackgroundImage>
+    </Container>
   );
 }
 

@@ -11,9 +11,9 @@ import ResponseModal from './responseModal';
 import UploadBook from './upload_book';
 import DisplayBook from './display_book';
 import UpdateBook from './update_book';
-import Education from './education';
 import Onboarding from './onboarding';
 import Footer from './footer';
+import About from './about';
 import '@mantine/core/styles.css';
 
 function FallBack(props) {
@@ -27,14 +27,14 @@ function App(props) {
         <NavBar />
         <main>
           <Routes>
-            <Route path="/" element={<Signup />} />
+            <Route path="/" element={<Onboarding />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/bookModal" element={<BookModal />} />
             <Route path="/login" element={<Login />} />
             <Route path="/tradeModal" element={<TradeModal />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile/:userId" element={<Profile />} />
-            <Route path="/how-it-works" element={<Education />} />
+            <Route path="/how-it-works" element={<About />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="*" element={<FallBack />} />
           </Routes>

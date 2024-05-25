@@ -12,53 +12,53 @@ import {
   Autocomplete,
   Group,
 } from '@mantine/core';
-import { IconCirclePlus } from '@tabler/icons-react';
+import {
+  IconCirclePlus,
+  IconCheck,
+  IconX,
+  IconTrash,
+  IconHeart,
+} from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
-import useStore from '../../store';
-
-const sampleBooks = [
-  {
-    id: 1,
-    title: 'Harry Potter and the Sorcerer\'s Stone',
-    author: 'J.K. Rowling',
-    cover: 'https://m.media-amazon.com/images/I/81q77Q39nEL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 2,
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    author: 'J.R.R. Tolkien',
-    cover: 'https://m.media-amazon.com/images/I/61mn09OvTQL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 3,
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    cover: 'https://m.media-amazon.com/images/I/71Q1tPupKjL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 4,
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    cover: 'https://m.media-amazon.com/images/I/811NqsxadrS._AC_UF1000,1000_QL80_.jpg',
-  },
-];
 
 function Library({ userId }) {
-  // const [addBookOpened, { open: openAddBook, close: closeAddBook }] = useDisclosure(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [uploadedBooks, setUploadedBooks] = useState([]);
+  const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
+  const [wishlist, setWishlist] = useState(new Set());
 
-  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
-  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
 
-  console.log('books in lib', currUserBooks);
+  const fetchBookDetails = async (bookIds) => {
+    try {
+      const bookDetailsPromises = bookIds.map((id) => axios.get(`${ROOT_URL}/books/${id}`));
+      const booksResponses = await Promise.all(bookDetailsPromises);
+      const books = booksResponses.map((response) => response.data);
+      setUploadedBooks(books);
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+    }
+  };
 
   useEffect(() => {
-    fetchUserBooks(userId);
-  }, []);
+    const fetchUploadedBooks = async () => {
+      try {
+        const response = await axios.get(`${ROOT_URL}/users/${userId}`);
+        const bookIds = response.data.uploadedBooks;
+        console.log('uploadedBooks:', bookIds);
+        fetchBookDetails(bookIds);
+      } catch (error) {
+        console.error('Error fetching uploaded books:', error);
+      }
+    };
+
+    fetchUploadedBooks();
+  }, [userId]);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
@@ -73,24 +73,20 @@ function Library({ userId }) {
 
   useEffect(() => {
     if (searchTerm) {
-      console.log('Fetching books for:', searchTerm);
       const fetchBooks = async () => {
         try {
-          const response = await axios.get(
-            'https://project-api-biblio.onrender.com/api/books/search',
-            {
-              params: { query: searchTerm },
-            },
-          );
+          const response = await axios.get(`${ROOT_URL}/books/search`, {
+            params: { query: searchTerm },
+          });
           const uniqueBooks = filterUniqueBooks(response.data.items || []);
-          setSearchResults(uniqueBooks); // Ensure searchResults is always an array
+          setSearchResults(uniqueBooks);
         } catch (error) {
-          setSearchResults([]); // Set to empty array on error
+          setSearchResults([]);
         }
       };
       fetchBooks();
     } else {
-      setSearchResults([]); // Reset when search term is empty
+      setSearchResults([]);
     }
   }, [searchTerm]);
 
@@ -99,29 +95,24 @@ function Library({ userId }) {
       try {
         const bookDetails = {
           title: selectedBook.volumeInfo.title,
-          author: selectedBook.volumeInfo.authors.join(', '),
+          author: selectedBook.volumeInfo.authors?.join(', ') || 'Unknown',
           genre: selectedBook.volumeInfo.categories?.[0] || 'Unknown',
           rating: selectedBook.volumeInfo.averageRating || 0,
-          readingTime: `${selectedBook.volumeInfo.pageCount} pages`,
-          condition: 'New', // Assuming default condition
+          readingTime: `${selectedBook.volumeInfo.pageCount || 0} pages`,
+          condition: 'New',
           datePublished: selectedBook.volumeInfo.publishedDate,
           coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
           owner: userId,
           ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
           tradeStatus: 'available',
         };
-        console.log('userid:', userId);
-        console.log('details:', bookDetails);
-        const response = await axios.post(
-          'https://project-api-biblio.onrender.com/api/books',
-          // 'http://localhost:9090/api/books',
-          {
-            userId,
-            bookDetails,
-          },
-        );
-        console.log('Book added:', response.data);
-        fetchUserBooks(userId);
+
+        const response = await axios.post(`${ROOT_URL}/books`, {
+          userId,
+          bookDetails,
+        });
+
+        setUploadedBooks((prevBooks) => [...prevBooks, response.data]);
         close();
       } catch (error) {
         console.error('Error adding book:', error);
@@ -130,12 +121,50 @@ function Library({ userId }) {
       alert('Please select a book to add.');
     }
   };
-  const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
-  // const [selectedBook, setSelectedBook] = useState(null);
 
   const handleViewBook = (book) => {
     setSelectedBook(book);
     setBookDetailsOpened(true);
+  };
+
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await axios.delete(`${ROOT_URL}/books/${bookId}`);
+      setUploadedBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
+    } catch (error) {
+      console.error('Error deleting book:', error);
+    }
+  };
+
+  const handleAddToWishlist = async (bookId) => {
+    const isAlreadyWishlisted = wishlist.has(bookId);
+    const bookDetails = uploadedBooks.find((book) => book._id === bookId);
+
+    if (!bookDetails) {
+      console.error('Book details not found');
+      return; // Exit if book details are not found
+    }
+
+    try {
+      let response;
+      if (isAlreadyWishlisted) {
+        // Remove from wishlist
+        response = await axios.delete(
+          `${ROOT_URL}/users/${userId}/wishlist/${bookId}`,
+        );
+        wishlist.delete(bookId);
+      } else {
+        // Add to wishlist
+        response = await axios.post(`${ROOT_URL}/users/${userId}/wishlist`, {
+          userId,
+          bookDetails,
+        });
+        wishlist.add(bookId);
+      }
+      setWishlist(new Set([...wishlist])); // Update the state to trigger re-render
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+    }
   };
 
   return (
@@ -177,7 +206,6 @@ function Library({ userId }) {
         </Text>
         <Button
           color="indigo"
-          // onClick={openAddBook}
           onClick={open}
           rightSection={<IconCirclePlus size={18} />}
         >
@@ -186,8 +214,14 @@ function Library({ userId }) {
       </div>
 
       <div className="library-card-holder">
-        {currUserBooks.map((book) => (
-          <Card key={book.id} shadow="sm" padding="lg" radius="md" className="post-card">
+        {uploadedBooks.map((book) => (
+          <Card
+            key={book._id}
+            shadow="sm"
+            padding="lg"
+            radius="md"
+            className="post-card"
+          >
             <Card.Section>
               <Image
                 src={book.coverImage}
@@ -197,11 +231,29 @@ function Library({ userId }) {
               />
             </Card.Section>
             <Group position="apart" mt="md" mb="xs">
-              <Text fw={500}>{book.title}</Text>
+              <Text fw={500} className="truncated-title">
+                {book.title}
+              </Text>
             </Group>
             <Text size="sm" c="dimmed">
               {book.author}
             </Text>
+            <Group spacing="xs">
+              <IconHeart
+                size={16}
+                className={
+                  wishlist.has(book._id)
+                    ? 'wishlist-icon active'
+                    : 'wishlist-icon'
+                }
+                onClick={() => handleAddToWishlist(book._id)}
+              />
+              <IconTrash
+                size={16}
+                className="delete-icon"
+                onClick={() => handleDeleteBook(book._id)}
+              />
+            </Group>
             <SimpleGrid cols={1}>
               <Button
                 color="indigo"

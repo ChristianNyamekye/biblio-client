@@ -23,7 +23,6 @@ function Profile() {
   useEffect(() => {
     fetchUser(userId);
   }, []);
-
   console.log('profile', currUser.name);
   console.log('user id', userId);
 
@@ -37,7 +36,7 @@ function Profile() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'library': return (<Library />);
+      case 'library': return <Library userId={userId} />;
       case 'offers': return (<ActiveOffers />);
       case 'wishlist': return (<Wishlist />);
       case 'settings': return (<Settings />);

@@ -2,21 +2,29 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Autocomplete, Select, Image, Text, Group, Title, Container, Stack, Button, List, ThemeIcon, rem,
+  Text, Group, Title, Container, Stack, Button, List, ThemeIcon, rem,
 } from '@mantine/core';
 import {
-  IconCircleCheck, IconCircleDashed, IconDownload, IconArrowRight, IconUserSearch, IconUserCircle, IconCheck,
+  IconArrowRight, IconUserSearch, IconUserCircle, IconCheck,
 } from '@tabler/icons-react';
 
 function Onboarding() {
   return (
-    <Container style={{ width: '100vw', margin: '0 auto', paddingTop: '25vh' }}>
-      <Group align="center" style={{ justifyContent: 'space-between' }}>
+    <Container style={{
+      paddingTop: '10vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+    }}
+    >
+      <Group
+        align="center"
+        style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
         <Stack
           align="stretch"
           justify="center"
           gap="lg"
-          style={{ width: '60%' }}
+          style={{ width: '61%' }}
         >
           <Title>
             Trade, Discover, and Connect over books with ease
@@ -28,7 +36,7 @@ function Onboarding() {
             spacing="sm"
             size="sm"
             icon={(
-              <ThemeIcon size={20} radius="xl">
+              <ThemeIcon color="indigo" size={20} radius="xl">
                 <IconCheck style={{ width: rem(12), height: rem(12) }} stroke={1.5} />
               </ThemeIcon>
             )}
@@ -40,15 +48,19 @@ function Onboarding() {
           </List>
           <Group justify="left">
             <Link to="/login">
-              <Button leftSection={<IconUserSearch size={14} />}>
+              <Button
+                color="indigo"
+                leftSection={<IconUserSearch size={18} />}
+              >
                 Login
               </Button>
             </Link>
             <Link to="/signup">
               <Button
                 variant="light"
-                leftSection={<IconUserCircle size={14} />}
-                rightSection={<IconArrowRight size={14} />}
+                leftSection={<IconUserCircle size={18} />}
+                rightSection={<IconArrowRight size={18} />}
+                color="indigo"
               >
                 Sign Up
               </Button>

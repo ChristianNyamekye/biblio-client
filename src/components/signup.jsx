@@ -54,7 +54,7 @@ function Signup() {
       <Box style={{ maxWidth: '100%', marginTop: '3%' }}>
         <Title order={1}
           style={{
-            fontSize: '36px', marginBottom: '20px', textAlign: 'center', color: '#3F6BB4',
+            fontSize: '36px', marginBottom: '20px', textAlign: 'center', color: '#4C6EF5',
           }}
         >Swap stories, Share Worlds
         </Title>
@@ -89,7 +89,7 @@ function Signup() {
           <TextInput onChange={handleUsernameChange} label="Username" required />
           <TextInput onChange={handleEmailChange} label="Email address" required type="email" />
           <TextInput onChange={handlePasswordChange} label="Password" required type="password" description="Your password needs to be at least 8 characters." />
-          <Button onClick={onClickRegister} fullWidth mt="lg" color="blue">Create an account</Button>
+          <Button onClick={onClickRegister} fullWidth mt="lg" color="indigo">Create an account</Button>
         </Paper>
       </Container>
     </BackgroundImage>

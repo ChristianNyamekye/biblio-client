@@ -25,8 +25,8 @@ function Wishlist({ userId }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [wishlist, setWishlist] = useState([]);
 
-  // const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-  const ROOT_URL = 'http://localhost:9090/api';
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
 
   // Fetch the initial wishlist when the component mounts or userId changes
   useEffect(() => {

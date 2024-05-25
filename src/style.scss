@@ -153,3 +153,33 @@ main {
   padding: 30px 6px;
   justify-content: center; 
 }
+
+.truncated-title {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+.wishlist-icon, .delete-icon {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.wishlist-icon {
+  color: initial; /* default color */
+}
+
+.wishlist-icon:hover {
+  color: red;
+}
+
+.delete-icon:hover {
+  color: gray;
+}
+
+.wishlist-icon.active {
+  color: red;
+}

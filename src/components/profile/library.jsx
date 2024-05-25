@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -14,6 +15,7 @@ import {
 import { IconCirclePlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
+import useStore from '../../store';
 
 const sampleBooks = [
   {
@@ -48,6 +50,15 @@ function Library({ userId }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
+  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
+
+  console.log('books in lib', currUserBooks);
+
+  useEffect(() => {
+    fetchUserBooks(userId);
+  }, []);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
@@ -94,13 +105,9 @@ function Library({ userId }) {
           readingTime: `${selectedBook.volumeInfo.pageCount} pages`,
           condition: 'New', // Assuming default condition
           datePublished: selectedBook.volumeInfo.publishedDate,
-          coverImage:
-            selectedBook.volumeInfo.imageLinks?.thumbnail
-            || 'No Image Available',
+          coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
           owner: userId,
-          ISBN:
-            selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier
-            || 'Unknown',
+          ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
           tradeStatus: 'available',
         };
         console.log('userid:', userId);
@@ -114,7 +121,8 @@ function Library({ userId }) {
           },
         );
         console.log('Book added:', response.data);
-        // close();
+        fetchUserBooks(userId);
+        close();
       } catch (error) {
         console.error('Error adding book:', error);
       }
@@ -178,12 +186,13 @@ function Library({ userId }) {
       </div>
 
       <div className="library-card-holder">
-        {sampleBooks.map((book) => (
+        {currUserBooks.map((book) => (
           <Card key={book.id} shadow="sm" padding="lg" radius="md" className="post-card">
             <Card.Section>
               <Image
-                src={book.cover}
-                height={400}
+                src={book.coverImage}
+                height={300}
+                width={0}
                 alt={book.title}
               />
             </Card.Section>

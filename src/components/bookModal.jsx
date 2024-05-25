@@ -17,7 +17,7 @@ function BookModal({ opened, onClose, book }) {
       centered
     >
       <SimpleGrid cols={2} spacing="sm">
-        <img src={book.cover} alt={book.title} style={{ maxWidth: '100%', height: 'auto' }} />
+        <Image src={book.coverImage} alt={book.title} style={{ maxWidth: '100%', height: 'auto' }} />
         <div>
           <Text size="md" weight={700}>
             Summary
@@ -28,9 +28,9 @@ function BookModal({ opened, onClose, book }) {
           <Group position="apart" style={{ marginTop: 20 }}>
             <Group>
               <Badge color="pink" variant="light">
-                Fantasy
+                {book.genre}
               </Badge>
-              <Badge color="green" variant="light">
+              {/* <Badge color="green" variant="light">
                 4.5/5
               </Badge>
               <Badge color="blue" variant="light">
@@ -38,7 +38,7 @@ function BookModal({ opened, onClose, book }) {
               </Badge>
               <Badge color="yellow" variant="light">
                 Great Condition
-              </Badge>
+              </Badge> */}
             </Group>
           </Group>
           <Text size="md" mb="sm" weight={500} style={{ marginTop: 20 }}>

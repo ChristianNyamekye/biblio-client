@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -100,13 +101,9 @@ function Library({ userId }) {
           readingTime: `${selectedBook.volumeInfo.pageCount || 0} pages`,
           condition: 'New',
           datePublished: selectedBook.volumeInfo.publishedDate,
-          coverImage:
-            selectedBook.volumeInfo.imageLinks?.thumbnail
-            || 'No Image Available',
+          coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
           owner: userId,
-          ISBN:
-            selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier
-            || 'Unknown',
+          ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
           tradeStatus: 'available',
         };
 
@@ -226,7 +223,12 @@ function Library({ userId }) {
             className="post-card"
           >
             <Card.Section>
-              <Image src={book.coverImage} height={200} alt={book.title} />
+              <Image
+                src={book.coverImage}
+                height={300}
+                width={0}
+                alt={book.title}
+              />
             </Card.Section>
             <Group position="apart" mt="md" mb="xs">
               <Text fw={500} className="truncated-title">

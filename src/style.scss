@@ -83,6 +83,8 @@ html, body {
   height: 100%;
   margin-bottom: 10px;
   padding: 10px 20px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 .center-dash-header{
   display: flex;
@@ -168,4 +170,12 @@ main {
   justify-content: center;
   color: #4C6EF5;
   padding-top: 50px;
+}
+.library-card-holder {
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 250px)); 
+  gap: 50px; 
+  padding: 30px 6px;
+  justify-content: center; 
 }

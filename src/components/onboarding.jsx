@@ -13,7 +13,7 @@ function Onboarding() {
   return (
     <Container size="lg"
       style={{
-        paddingTop: '10vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+        paddingTop: '15vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
       }}
     >
       <Group

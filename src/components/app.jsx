@@ -26,7 +26,7 @@ function App(props) {
         <NavBar />
         <main>
           <Routes>
-            <Route path="/" element={<Signup />} />
+            <Route path="/" element={<Onboarding />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/bookModal" element={<BookModal />} />
             <Route path="/login" element={<Login />} />

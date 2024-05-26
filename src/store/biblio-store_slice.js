@@ -123,7 +123,7 @@ export default function createBookSlice(set, get) {
     // home - fetch all books on database
     fetchAllBooks: async () => {
       try {
-        const response = await axios.get(`${ROOT_URL}/books`);
+        const response = await axios.get(`${ROOT_URL}/books/all-uploaded`);
         set(
           ({ biblioSlice }) => {
             biblioSlice.allBooks = response.data;

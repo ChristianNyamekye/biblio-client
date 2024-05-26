@@ -12,7 +12,7 @@ import {
   Autocomplete,
   Group,
 } from '@mantine/core';
-import { IconCirclePlus } from '@tabler/icons-react';
+import { IconCirclePlus, IconHeart, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
 import useStore from '../../store';
@@ -22,11 +22,19 @@ function Library({ userId }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [wishlist, setWishlist] = useState(new Set());
 
-  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
-  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
+  const fetchUserBooks = useStore(
+    ({ biblioSlice }) => biblioSlice.fetchUserBooks,
+  );
+  const currUserBooks = useStore(
+    ({ biblioSlice }) => biblioSlice.currUserBooks,
+  );
 
   console.log('books in lib', currUserBooks);
+
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
 
   useEffect(() => {
     fetchUserBooks(userId);
@@ -79,9 +87,13 @@ function Library({ userId }) {
           readingTime: `${selectedBook.volumeInfo.pageCount} pages`,
           condition: 'New',
           datePublished: selectedBook.volumeInfo.publishedDate,
-          coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
+          coverImage:
+            selectedBook.volumeInfo.imageLinks?.thumbnail
+            || 'No Image Available',
           owner: userId,
-          ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
+          ISBN:
+            selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier
+            || 'Unknown',
           tradeStatus: 'available',
         };
         console.log('userid:', userId);
@@ -104,7 +116,42 @@ function Library({ userId }) {
       alert('Please select a book to add.');
     }
   };
+
+  const handleAddToWishlist = async (bookId) => {
+    const isAlreadyWishlisted = wishlist.has(bookId);
+    try {
+      let response;
+      if (isAlreadyWishlisted) {
+        // Remove from wishlist
+        response = await axios.delete(
+          `${ROOT_URL}/users/${userId}/wishlist/${bookId}`,
+        );
+        wishlist.delete(bookId);
+      } else {
+        // Add to wishlist
+        const bookDetails = currUserBooks.find((book) => book._id === bookId);
+        response = await axios.post(`${ROOT_URL}/users/${userId}/wishlist`, {
+          userId,
+          bookDetails,
+        });
+        wishlist.add(bookId);
+      }
+      setWishlist(new Set([...wishlist])); // Update the state to trigger re-render
+    } catch (error) {
+      console.error('Error updating wishlist:', error);
+    }
+  };
+
   const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
+
+  const handleDeleteBook = async (bookId) => {
+    try {
+      await axios.delete(`${ROOT_URL}/books/${bookId}`);
+      fetchUserBooks(userId); // Re-fetch user's books after deletion
+    } catch (error) {
+      console.error('Error deleting book:', error);
+    }
+  };
 
   const handleViewBook = (book) => {
     setSelectedBook(book);
@@ -159,7 +206,13 @@ function Library({ userId }) {
 
       <div className="library-card-holder">
         {currUserBooks.map((book) => (
-          <Card key={book.id} shadow="sm" padding="lg" radius="md" className="post-card">
+          <Card
+            key={book.id}
+            shadow="sm"
+            padding="lg"
+            radius="md"
+            className="post-card"
+          >
             <Card.Section>
               <Image
                 src={book.coverImage}
@@ -185,6 +238,22 @@ function Library({ userId }) {
                 View Book
               </Button>
             </SimpleGrid>
+            <Group spacing="xs">
+              <IconHeart
+                size={16}
+                className={
+                  wishlist.has(book._id)
+                    ? 'wishlist-icon active'
+                    : 'wishlist-icon'
+                }
+                onClick={() => handleAddToWishlist(book._id)}
+              />
+              <IconTrash
+                size={16}
+                className="delete-icon"
+                onClick={() => handleDeleteBook(book._id)}
+              />
+            </Group>
           </Card>
         ))}
       </div>

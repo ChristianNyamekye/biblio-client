@@ -18,13 +18,17 @@ function Profile() {
   const { userId } = useParams();
 
   const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
+
+  // const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   useEffect(() => {
     fetchUser(userId);
   }, []);
-  console.log('profile', currUser.name);
-  console.log('user id', userId);
+
+  // console.log('books', currUserBooks[0]);
+
+  console.log('user id', currUser);
 
   const handleBookSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -38,7 +42,7 @@ function Profile() {
     switch (activeTab) {
       case 'library': return <Library userId={userId} />;
       case 'offers': return (<ActiveOffers />);
-      case 'wishlist': return (<Wishlist />);
+      case 'wishlist': return (<Wishlist userId={userId} />);
       case 'settings': return (<Settings />);
       default: return null;
     }

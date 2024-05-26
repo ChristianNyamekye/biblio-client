@@ -9,6 +9,8 @@ export default function createBookSlice(set, get) {
     allBooks: [], // all books in our store
     bookInfoToView: {}, // info a single past of a book
     userProfileInformation: {},
+    currUserBooks: [],
+    currUserWishList: [],
 
     createUser: async (userInfo) => {
       try {
@@ -23,6 +25,7 @@ export default function createBookSlice(set, get) {
 
     loginUser: async (userInfo) => {
       try {
+        console.log(userInfo);
         const response = await axios.post(`${ROOT_URL}/login`, userInfo);
         set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/loginUser');
       } catch (error) {
@@ -32,10 +35,31 @@ export default function createBookSlice(set, get) {
 
     fetchUser: async (userId) => {
       try {
-        console.log('fetching id', userId);
         const response = await axios.get(`${ROOT_URL}/users/${userId}`);
-        console.log('fetching response', response);
         set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/fetchProfile');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
+    fetchUserBooks: async (userId) => {
+      try {
+        console.log('in store', userId);
+        const response = await axios.get(`${ROOT_URL}/users/getbooks/${userId}`);
+        console.log('in store', response);
+        set(({ biblioSlice }) => { biblioSlice.currUserBooks = response.data; }, false, 'user/fetchUserBooks');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
+    fetchUserWishList: async (userId) => {
+      try {
+        console.log('in store', userId);
+        // /users/:userId/wishlist
+        const response = await axios.get(`${ROOT_URL}/users/${userId}/wishlist`);
+        console.log('in store', response);
+        set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
       } catch (error) {
         get().errorSlice.newError(error.message);
       }

@@ -1,3 +1,4 @@
+/* eslint-disable no-alert */
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
@@ -14,40 +15,22 @@ import {
 import { IconCirclePlus } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
-
-const sampleBooks = [
-  {
-    id: 1,
-    title: 'Harry Potter and the Sorcerer\'s Stone',
-    author: 'J.K. Rowling',
-    cover: 'https://m.media-amazon.com/images/I/81q77Q39nEL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 2,
-    title: 'The Lord of the Rings: The Fellowship of the Ring',
-    author: 'J.R.R. Tolkien',
-    cover: 'https://m.media-amazon.com/images/I/61mn09OvTQL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 3,
-    title: 'Pride and Prejudice',
-    author: 'Jane Austen',
-    cover: 'https://m.media-amazon.com/images/I/71Q1tPupKjL._AC_UF1000,1000_QL80_.jpg',
-  },
-  {
-    id: 4,
-    title: 'To Kill a Mockingbird',
-    author: 'Harper Lee',
-    cover: 'https://m.media-amazon.com/images/I/811NqsxadrS._AC_UF1000,1000_QL80_.jpg',
-  },
-];
+import useStore from '../../store';
 
 function Library({ userId }) {
-  // const [addBookOpened, { open: openAddBook, close: closeAddBook }] = useDisclosure(false);
   const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
+
+  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
+  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
+
+  console.log('books in lib', currUserBooks);
+
+  useEffect(() => {
+    fetchUserBooks(userId);
+  }, []);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
@@ -85,22 +68,20 @@ function Library({ userId }) {
 
   const handleAddBook = async () => {
     if (selectedBook) {
+      console.log('selectedBook', selectedBook);
       try {
         const bookDetails = {
           title: selectedBook.volumeInfo.title,
           author: selectedBook.volumeInfo.authors.join(', '),
           genre: selectedBook.volumeInfo.categories?.[0] || 'Unknown',
+          description: selectedBook.volumeInfo.description,
           rating: selectedBook.volumeInfo.averageRating || 0,
           readingTime: `${selectedBook.volumeInfo.pageCount} pages`,
-          condition: 'New', // Assuming default condition
+          condition: 'New',
           datePublished: selectedBook.volumeInfo.publishedDate,
-          coverImage:
-            selectedBook.volumeInfo.imageLinks?.thumbnail
-            || 'No Image Available',
+          coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
           owner: userId,
-          ISBN:
-            selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier
-            || 'Unknown',
+          ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
           tradeStatus: 'available',
         };
         console.log('userid:', userId);
@@ -114,7 +95,8 @@ function Library({ userId }) {
           },
         );
         console.log('Book added:', response.data);
-        // close();
+        fetchUserBooks(userId);
+        close();
       } catch (error) {
         console.error('Error adding book:', error);
       }
@@ -123,7 +105,6 @@ function Library({ userId }) {
     }
   };
   const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
-  // const [selectedBook, setSelectedBook] = useState(null);
 
   const handleViewBook = (book) => {
     setSelectedBook(book);
@@ -169,7 +150,6 @@ function Library({ userId }) {
         </Text>
         <Button
           color="indigo"
-          // onClick={openAddBook}
           onClick={open}
           rightSection={<IconCirclePlus size={18} />}
         >
@@ -178,12 +158,13 @@ function Library({ userId }) {
       </div>
 
       <div className="library-card-holder">
-        {sampleBooks.map((book) => (
+        {currUserBooks.map((book) => (
           <Card key={book.id} shadow="sm" padding="lg" radius="md" className="post-card">
             <Card.Section>
               <Image
-                src={book.cover}
-                height={400}
+                src={book.coverImage}
+                height={300}
+                width={0}
                 alt={book.title}
               />
             </Card.Section>

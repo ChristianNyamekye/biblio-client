@@ -42,7 +42,7 @@ function Profile() {
     switch (activeTab) {
       case 'library': return <Library userId={userId} />;
       case 'offers': return (<ActiveOffers />);
-      case 'wishlist': return (<Wishlist />);
+      case 'wishlist': return (<Wishlist userId={userId} />);
       case 'settings': return (<Settings />);
       default: return null;
     }

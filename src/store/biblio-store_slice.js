@@ -10,6 +10,7 @@ export default function createBookSlice(set, get) {
     bookInfoToView: {}, // info a single past of a book
     userProfileInformation: {},
     currUserBooks: [],
+    currUserWishList: [],
 
     createUser: async (userInfo) => {
       try {
@@ -41,12 +42,24 @@ export default function createBookSlice(set, get) {
       }
     },
 
-    fetchUserBooks: async (userId, bookIds) => {
+    fetchUserBooks: async (userId) => {
       try {
         console.log('in store', userId);
-        const response = await axios.get(`${ROOT_URL}//users/getbooks/${userId}`);
+        const response = await axios.get(`${ROOT_URL}/users/getbooks/${userId}`);
         console.log('in store', response);
         set(({ biblioSlice }) => { biblioSlice.currUserBooks = response.data; }, false, 'user/fetchUserBooks');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
+    fetchUserWishList: async (userId) => {
+      try {
+        console.log('in store', userId);
+        // /users/:userId/wishlist
+        const response = await axios.get(`${ROOT_URL}/users/${userId}/wishlist`);
+        console.log('in store', response);
+        set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
       } catch (error) {
         get().errorSlice.newError(error.message);
       }

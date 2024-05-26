@@ -2,6 +2,7 @@ import React from 'react';
 import {
   Modal, Image, Text, Group, Badge, Button, SimpleGrid, Card,
 } from '@mantine/core';
+import { IconStar } from '@tabler/icons-react';
 
 function BookModal({ opened, onClose, book }) {
   if (!book) return null;
@@ -11,8 +12,8 @@ function BookModal({ opened, onClose, book }) {
       opened={opened}
       onClose={onClose}
       title={book.title}
-      overlayOpacity={0.55}
-      overlayBlur={3}
+      // overlayOpacity={0.55}
+      // overlayBlur={3}
       size="60%"
       centered
     >
@@ -23,17 +24,20 @@ function BookModal({ opened, onClose, book }) {
             Summary
           </Text>
           <Text size="sm" style={{ marginTop: 10 }}>
-            The Hobbit is set in Middle-earth and follows home-loving Bilbo Baggins, the hobbit of the title, who joins the wizard Gandalf and the thirteen dwarves of Thorin.
+            {book.description}
+            {/* The Hobbit is set in Middle-earth and follows home-loving Bilbo Baggins, the hobbit of the title, who joins the wizard Gandalf and the thirteen dwarves of Thorin. */}
           </Text>
           <Group position="apart" style={{ marginTop: 20 }}>
             <Group>
               <Badge color="pink" variant="light">
                 {book.genre}
               </Badge>
-              {/* <Badge color="green" variant="light">
-                4.5/5
+              {book.rating !== 0 && (
+              <Badge rightSection={<IconStar size={12} />} color="green" variant="light">
+                {book.rating}/5
               </Badge>
-              <Badge color="blue" variant="light">
+              )}
+              {/* <Badge color="blue" variant="light">
                 6.5 hrs
               </Badge>
               <Badge color="yellow" variant="light">

@@ -5,6 +5,7 @@ import Home from './home';
 import Profile from './profile/profile';
 import Login from './login';
 import Signup from './signup';
+import TradeModal from './tradeModal';
 import BookModal from './bookModal';
 import ResponseModal from './responseModal';
 import UploadBook from './upload_book';
@@ -30,6 +31,7 @@ function App(props) {
             <Route path="/signup" element={<Signup />} />
             <Route path="/bookModal" element={<BookModal />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/tradeModal" element={<TradeModal />} />
             <Route path="/home" element={<Home />} />
             <Route path="/profile/:userId" element={<Profile />} />
             <Route path="/how-it-works" element={<About />} />

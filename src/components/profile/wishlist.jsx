@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Text, Button, Card, Image, Group, SimpleGrid, Modal, Autocomplete,
 } from '@mantine/core';
-import { IconCirclePlus } from '@tabler/icons-react';
+import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
 import useStore from '../../store';
@@ -16,8 +16,12 @@ function Wishlist({ userId }) {
   const [selectedBook, setSelectedBook] = useState(null);
   const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
 
-  const fetchUserWishList = useStore(({ biblioSlice }) => biblioSlice.fetchUserWishList);
-  const currUserWishList = useStore(({ biblioSlice }) => biblioSlice.currUserWishList);
+  const fetchUserWishList = useStore(
+    ({ biblioSlice }) => biblioSlice.fetchUserWishList,
+  );
+  const currUserWishList = useStore(
+    ({ biblioSlice }) => biblioSlice.currUserWishList,
+  );
 
   useEffect(() => {
     fetchUserWishList(userId);
@@ -59,6 +63,9 @@ function Wishlist({ userId }) {
     }
   }, [searchTerm]);
 
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
+
   const handleAddToWishlist = async () => {
     if (selectedBook) {
       try {
@@ -71,14 +78,15 @@ function Wishlist({ userId }) {
           readingTime: `${selectedBook.volumeInfo.pageCount} pages`,
           condition: 'New',
           datePublished: selectedBook.volumeInfo.publishedDate,
-          coverImage: selectedBook.volumeInfo.imageLinks?.thumbnail || 'No Image Available',
+          coverImage:
+            selectedBook.volumeInfo.imageLinks?.thumbnail
+            || 'No Image Available',
           owner: userId,
-          ISBN: selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier || 'Unknown',
+          ISBN:
+            selectedBook.volumeInfo.industryIdentifiers?.[0]?.identifier
+            || 'Unknown',
           tradeStatus: 'available',
         };
-
-        const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-        // const ROOT_URL = 'http://localhost:9090/api';
 
         const response = await axios.post(
           `${ROOT_URL}/users/${userId}/wishlist`,
@@ -94,6 +102,15 @@ function Wishlist({ userId }) {
     }
   };
 
+  const handleRemoveFromWishlist = async (bookId) => {
+    try {
+      await axios.delete(`${ROOT_URL}/users/${userId}/wishlist/${bookId}`);
+      fetchUserWishList(userId); // Refresh the list after deletion
+    } catch (error) {
+      console.error('Error removing book from wishlist:', error);
+    }
+  };
+
   const handleViewBook = (book) => {
     setSelectedBook(book);
     setBookDetailsOpened(true);
@@ -101,12 +118,7 @@ function Wishlist({ userId }) {
 
   return (
     <div className="center-dash">
-      <Modal
-        opened={opened}
-        onClose={close}
-        title="Search for a Book"
-        centered
-      >
+      <Modal opened={opened} onClose={close} title="Search for a Book" centered>
         <Autocomplete
           label="Find Book"
           placeholder="Enter Title or Author"
@@ -133,14 +145,24 @@ function Wishlist({ userId }) {
         <Text size="xl" fw={700} color="indigo">
           Wishlist
         </Text>
-        <Button color="indigo" onClick={open} rightSection={<IconCirclePlus size={18} />}>
+        <Button
+          color="indigo"
+          onClick={open}
+          rightSection={<IconCirclePlus size={18} />}
+        >
           Add To Wishlist
         </Button>
       </div>
 
       <div className="library-card-holder">
         {currUserWishList.map((book) => (
-          <Card key={book.id} shadow="sm" padding="lg" radius="md" className="post-card">
+          <Card
+            key={book.id}
+            shadow="sm"
+            padding="lg"
+            radius="md"
+            className="post-card"
+          >
             <Card.Section>
               <Image
                 src={book.coverImage}
@@ -166,6 +188,13 @@ function Wishlist({ userId }) {
                 View Book
               </Button>
             </SimpleGrid>
+            <Group>
+              <IconTrash
+                size={16}
+                className="delete-icon"
+                onClick={() => handleRemoveFromWishlist(book.id)}
+              />
+            </Group>
           </Card>
         ))}
       </div>
@@ -175,7 +204,6 @@ function Wishlist({ userId }) {
         onClose={() => setBookDetailsOpened(false)}
         book={selectedBook}
       />
-
     </div>
   );
 }

@@ -1,9 +1,17 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  Autocomplete, Select, Title, Container, Loader, Button, Group,
+  Autocomplete,
+  Select,
+  Title,
+  Container,
+  Loader,
+  Button,
+  Group,
+  Text,
 } from '@mantine/core';
 import axios from 'axios';
 import debounce from 'lodash.debounce';
+import useStore from '../store/biblio-store_slice';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -27,9 +35,12 @@ function Home() {
       if (!query) return;
       setLoading(true);
       try {
-        const response = await axios.get('https://project-api-biblio.onrender.com/api/books/search', {
-          params: { query },
-        });
+        const response = await axios.get(
+          'https://project-api-biblio.onrender.com/api/books/search',
+          {
+            params: { query },
+          },
+        );
         const uniqueBooks = filterUniqueBooks(response.data.items || []);
         setSearchResults(uniqueBooks);
       } finally {
@@ -46,9 +57,12 @@ function Home() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      const response = await axios.get('https://project-api-biblio.onrender.com/api/books/fetchBook', {
-        params: { title: `intitle:${lastSearchTerm}` },
-      });
+      const response = await axios.get(
+        'https://project-api-biblio.onrender.com/api/books/fetchBook',
+        {
+          params: { title: `intitle:${lastSearchTerm}` },
+        },
+      );
       const book = response.data;
       console.log(`RESULTS: ${JSON.stringify(book)}`);
     } finally {
@@ -76,7 +90,10 @@ function Home() {
             label: book.volumeInfo.title,
             description: book.volumeInfo.authors?.join(', '),
           }))}
-          onChange={(value) => { setSearchTerm(value); setLastSearchTerm(value); }}
+          onChange={(value) => {
+            setSearchTerm(value);
+            setLastSearchTerm(value);
+          }}
           rightSection={loading ? <Loader size="sm" /> : null}
           style={{ flex: 3 }}
         />

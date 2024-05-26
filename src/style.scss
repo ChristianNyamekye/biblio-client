@@ -179,3 +179,24 @@ main {
   padding: 30px 6px;
   justify-content: center; 
 }
+
+.wishlist-icon, .delete-icon {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.wishlist-icon {
+  color: initial; /* default color */
+}
+
+.wishlist-icon:hover {
+  color: red;
+}
+
+.delete-icon:hover {
+  color: gray;
+}
+
+.wishlist-icon.active {
+  color: red;
+}

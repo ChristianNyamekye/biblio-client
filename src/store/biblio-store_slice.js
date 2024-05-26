@@ -17,7 +17,13 @@ export default function createBookSlice(set, get) {
         console.log('user info', userInfo);
         const response = await axios.post(`${ROOT_URL}/register`, userInfo);
         console.log('user response', response.data);
-        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/createUser');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.userProfileInformation = response.data;
+          },
+          false,
+          'user/createUser',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -27,7 +33,13 @@ export default function createBookSlice(set, get) {
       try {
         console.log(userInfo);
         const response = await axios.post(`${ROOT_URL}/login`, userInfo);
-        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/loginUser');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.userProfileInformation = response.data;
+          },
+          false,
+          'user/loginUser',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -36,7 +48,13 @@ export default function createBookSlice(set, get) {
     fetchUser: async (userId) => {
       try {
         const response = await axios.get(`${ROOT_URL}/users/${userId}`);
-        set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'user/fetchProfile');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.userProfileInformation = response.data;
+          },
+          false,
+          'user/fetchProfile',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -45,9 +63,17 @@ export default function createBookSlice(set, get) {
     fetchUserBooks: async (userId) => {
       try {
         console.log('in store', userId);
-        const response = await axios.get(`${ROOT_URL}/users/getbooks/${userId}`);
+        const response = await axios.get(
+          `${ROOT_URL}/users/getbooks/${userId}`,
+        );
         console.log('in store', response);
-        set(({ biblioSlice }) => { biblioSlice.currUserBooks = response.data; }, false, 'user/fetchUserBooks');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.currUserBooks = response.data;
+          },
+          false,
+          'user/fetchUserBooks',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -57,9 +83,17 @@ export default function createBookSlice(set, get) {
       try {
         console.log('in store', userId);
         // /users/:userId/wishlist
-        const response = await axios.get(`${ROOT_URL}/users/${userId}/wishlist`);
+        const response = await axios.get(
+          `${ROOT_URL}/users/${userId}/wishlist`,
+        );
         console.log('in store', response);
-        set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.currUserWishList = response.data;
+          },
+          false,
+          'user/fetchUserWishlist',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -74,7 +108,13 @@ export default function createBookSlice(set, get) {
         } else {
           response = await axios.get(`${ROOT_URL}/books/${bookId}${API_KEY}`);
         }
-        set(({ biblioSlice }) => { biblioSlice.bookInfoToView = response.data; }, false, 'posts/fetchBook');
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.bookInfoToView = response.data;
+          },
+          false,
+          'posts/fetchBook',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -83,8 +123,10 @@ export default function createBookSlice(set, get) {
     // home - fetch all books on database
     fetchAllBooks: async () => {
       try {
-        const response = await axios.get(`${ROOT_URL}${API_KEY}`);
-        set(({ biblioSlice }) => { biblioSlice.allBooks = response.data; }, false, 'posts/fetchAllBooks');
+        const response = await axios.get(`${ROOT_URL}/books`);
+        set((state) => ({
+          biblioSlice: { ...state.biblioSlice, allBooks: response.data },
+        }));
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -110,9 +152,15 @@ export default function createBookSlice(set, get) {
       try {
         let response;
         if (fromProfile) {
-          response = await axios.put(`${ROOT_URL}/profile/${bookInfo.id}${API_KEY}`, bookInfo);
+          response = await axios.put(
+            `${ROOT_URL}/profile/${bookInfo.id}${API_KEY}`,
+            bookInfo,
+          );
         } else {
-          response = await axios.put(`${ROOT_URL}/books/${bookInfo.id}${API_KEY}`, bookInfo);
+          response = await axios.put(
+            `${ROOT_URL}/books/${bookInfo.id}${API_KEY}`,
+            bookInfo,
+          );
         }
         // replace the post the posts in view - front end logic that filter which books not rendered or show on search
         set(({ biblioSlice }) => {
@@ -128,7 +176,9 @@ export default function createBookSlice(set, get) {
       try {
         await axios.delete(`${ROOT_URL}/display/${id}${API_KEY}`); // delete on the backend side
         set(({ biblioSlice }) => {
-          biblioSlice.allBooks = biblioSlice.allBooks.filter((book) => book.id !== id); // remove from the displayed books on front
+          biblioSlice.allBooks = biblioSlice.allBooks.filter(
+            (book) => book.id !== id,
+          ); // remove from the displayed books on front
         });
       } catch (error) {
         get().erroSlice.newError(error.message);

@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import {
   Text, Group, Title, Button, Stack, Card, Divider,
 } from '@mantine/core';
-import { IconArrowRight } from '@tabler/icons-react';
 import useStore from '../../store';
 
 function ActiveOffers() {

@@ -22,7 +22,6 @@ function Library({ userId }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-  const [wishlist, setWishlist] = useState(new Set());
 
   const fetchUserBooks = useStore(
     ({ biblioSlice }) => biblioSlice.fetchUserBooks,
@@ -114,31 +113,6 @@ function Library({ userId }) {
       }
     } else {
       alert('Please select a book to add.');
-    }
-  };
-
-  const handleAddToWishlist = async (bookId) => {
-    const isAlreadyWishlisted = wishlist.has(bookId);
-    try {
-      let response;
-      if (isAlreadyWishlisted) {
-        // Remove from wishlist
-        response = await axios.delete(
-          `${ROOT_URL}/users/${userId}/wishlist/${bookId}`,
-        );
-        wishlist.delete(bookId);
-      } else {
-        // Add to wishlist
-        const bookDetails = currUserBooks.find((book) => book._id === bookId);
-        response = await axios.post(`${ROOT_URL}/users/${userId}/wishlist`, {
-          userId,
-          bookDetails,
-        });
-        wishlist.add(bookId);
-      }
-      setWishlist(new Set([...wishlist])); // Update the state to trigger re-render
-    } catch (error) {
-      console.error('Error updating wishlist:', error);
     }
   };
 
@@ -239,15 +213,6 @@ function Library({ userId }) {
               </Button>
             </SimpleGrid>
             <Group spacing="xs">
-              <IconHeart
-                size={16}
-                className={
-                  wishlist.has(book._id)
-                    ? 'wishlist-icon active'
-                    : 'wishlist-icon'
-                }
-                onClick={() => handleAddToWishlist(book._id)}
-              />
               <IconTrash
                 size={16}
                 className="delete-icon"

@@ -70,6 +70,7 @@ function TradeModal({
               fullWidth
               style={{ marginTop: 14 }}
               onClick={handleTradeRequest}
+              disabled={!selectedBookId}
             >
               Send Trade Request
             </Button>

@@ -2,23 +2,50 @@ import React from 'react';
 import {
   Modal, Button, Text, Card, Image,
 } from '@mantine/core';
-import hobbit from '../assets/hobbit.jpg';
+import { useNavigate } from 'react-router-dom';
 
-function TradeModal({ isOpen, onClose, username }) {
+function TradeModal({
+  isOpen, onClose, username, book,
+}) {
+  const navigate = useNavigate();
+
+  const handleKeepLooking = () => {
+    navigate('/home');
+    onClose();
+  };
+
+  if (!book) {
+    return null;
+  }
+
   return (
-    <Modal opened={isOpen} onClose={onClose} title="Congrats!" size="lg">
+    <Modal
+      opened={isOpen}
+      onClose={onClose}
+      title="Trade Request Sent"
+      size="md"
+    >
       <Card shadow="sm" padding="lg">
         <Card.Section>
-          <img src={hobbit} alt="The Hobbit" style={{ maxWidth: '50%', height: 'auto' }} />
+          <Image
+            src={book.coverImage}
+            alt={book.title}
+            style={{ maxWidth: '50%', height: 'auto' }}
+          />
         </Card.Section>
-        <Text size="md" style={{ marginTop: 14, textAlign: 'center' }}>
-          Your trade offer has been sent to @{username}! Check back later to see if they accept.
+        <Text
+          size="md"
+          style={{ marginTop: 14, textAlign: 'center' }}
+        >
+          Your trade offer has been sent! Check back later to see if they accept.
         </Text>
-        <a href="/home" style={{ textDecoration: 'none' }}>
-          <Button fullWidth style={{ marginTop: 14 }}>
-            Keep Looking
-          </Button>
-        </a>
+        <Button
+          fullWidth
+          style={{ marginTop: 14 }}
+          onClick={handleKeepLooking}
+        >
+          Keep Looking
+        </Button>
       </Card>
     </Modal>
   );

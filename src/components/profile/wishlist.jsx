@@ -63,8 +63,8 @@ function Wishlist({ userId }) {
     }
   }, [searchTerm]);
 
-  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-  // const ROOT_URL = 'http://localhost:9090/api';
+  // const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  const ROOT_URL = 'http://localhost:9090/api';
 
   const handleAddToWishlist = async () => {
     if (selectedBook) {

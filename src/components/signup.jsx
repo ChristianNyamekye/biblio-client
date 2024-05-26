@@ -13,7 +13,6 @@ import {
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
-import bookshelf from '../assets/background.png';
 import signImage from '../assets/sign-up.png';
 
 function Signup() {

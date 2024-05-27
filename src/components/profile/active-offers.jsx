@@ -100,13 +100,24 @@ function ActiveOffers() {
   };
 
   useEffect(() => {
+    handleGetSentRequestInfo();
     handleGetReceivedRequestInfo();
   }, [currUser]);
 
   console.log('received', receivedRequests);
 
+  const updateOfferStatus = async (offerId, newStatus) => {
+    try {
+      await axios.patch(`${ROOT_URL}/trade-requests/${offerId}`, { status: newStatus });
+      handleGetSentRequestInfo();
+      handleGetReceivedRequestInfo();
+    } catch (error) {
+      console.error('Error updating offer status:', error);
+    }
+  };
+
   return (
-    <div style={{ maxWidth: 800, margin: '0 auto' }}>
+    <div style={{ maxWidth: 800, maxHeight: 1000, margin: '0 auto' }}>
       <Title order={2}>Active Offers</Title>
       <Stack spacing="md">
         <div>
@@ -121,6 +132,7 @@ function ActiveOffers() {
               <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
             </div>
           ))}
+          {/* // including conditional where if status is declined the box modal is outlined in red */}
         </div>
         <Divider />
         <div>
@@ -129,10 +141,19 @@ function ActiveOffers() {
             <div key={offer.offerId}>
               <h3>Other person Wants Book: {offer.senderWantsBook.title}</h3>
               <p>Author: {offer.senderWantsBook.author}</p>
+              <Group position="right" mt="md">
+                <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
+                <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+              </Group>
               <h3>Other person is Offering Book: {offer.senderGivesBook.title}</h3>
               <p>Author: {offer.senderGivesBook.author}</p>
               <p>Status: {offer.status}</p>
               <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
+              <Group position="right" mt="md">
+                <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
+                <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+              </Group>
+
             </div>
           ))}
         </div>

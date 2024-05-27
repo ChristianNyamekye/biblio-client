@@ -1,4 +1,6 @@
 import React from 'react';
+import { Bounce, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import NavBar from './nav-bar';
 import Home from './home';
@@ -38,6 +40,19 @@ function App(props) {
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="*" element={<FallBack />} />
           </Routes>
+          <ToastContainer
+            position="bottom-left"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+            transition:Bounce
+          />
         </main>
         <Footer />
       </div>

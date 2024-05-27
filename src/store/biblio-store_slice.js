@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
-const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+// const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
 const API_KEY = '?key=biblio';
-// const ROOT_URL = 'http://localhost:9090/api';
+const ROOT_URL = 'http://localhost:9090/api';
 
 export default function createBookSlice(set, get) {
   return {
@@ -25,7 +26,7 @@ export default function createBookSlice(set, get) {
           'user/createUser',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error signing up: ${error.message}`);
       }
     },
 
@@ -41,7 +42,7 @@ export default function createBookSlice(set, get) {
           'user/loginUser',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error loggin in: ${error.message}`);
       }
     },
 
@@ -56,7 +57,7 @@ export default function createBookSlice(set, get) {
           'user/fetchProfile',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error loading profile: ${error.message}`);
       }
     },
 
@@ -74,8 +75,9 @@ export default function createBookSlice(set, get) {
           false,
           'user/fetchUserBooks',
         );
+        toast.success('Books loaded successfully');
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error loading books: ${error.message}`);
       }
     },
 
@@ -95,7 +97,7 @@ export default function createBookSlice(set, get) {
           'user/fetchUserWishlist',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error loading wishlist: ${error.message}`);
       }
     },
 
@@ -116,7 +118,7 @@ export default function createBookSlice(set, get) {
           'posts/fetchBook',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error fetching books: ${error.message}`);
       }
     },
 
@@ -124,10 +126,11 @@ export default function createBookSlice(set, get) {
       try {
         console.log('trade in store', userId, requestInfo);
         const response = await axios.post(`${ROOT_URL}/users/${userId}/trade`, requestInfo);
-        console.log('in store', response);
+        toast.success('Trade request successfully');
         set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
       } catch (error) {
         get().errorSlice.newError(error.message);
+        toast.error(`Error sending trade request: ${error.message}`);
       }
     },
 
@@ -143,7 +146,7 @@ export default function createBookSlice(set, get) {
           'user/fetchAllBooks',
         );
       } catch (error) {
-        get().errorSlice.newError(error.message);
+        toast.error(`Error loading books: ${error.message}`);
       }
     },
 
@@ -158,31 +161,7 @@ export default function createBookSlice(set, get) {
         }
         set(({ biblioSlice }) => biblioSlice.allBooks.push(response.data)); // update resource for frontend
       } catch (error) {
-        get().erroSlice.newError(error.message);
-      }
-    },
-
-    // receives information from the person intending to lend the book -> update if they accept request to lend book
-    updateBookInfo: async (bookInfo, fromProfile) => {
-      try {
-        let response;
-        if (fromProfile) {
-          response = await axios.put(
-            `${ROOT_URL}/profile/${bookInfo.id}${API_KEY}`,
-            bookInfo,
-          );
-        } else {
-          response = await axios.put(
-            `${ROOT_URL}/books/${bookInfo.id}${API_KEY}`,
-            bookInfo,
-          );
-        }
-        // replace the post the posts in view - front end logic that filter which books not rendered or show on search
-        set(({ biblioSlice }) => {
-          biblioSlice.allBooks = biblioSlice.allBooks.map((oldPost) => (oldPost.id === bookInfo.id ? response.data : oldPost));
-        });
-      } catch (error) {
-        get().erroSlice.newError(error.message);
+        toast.error(`Error uploading book: ${error.message}`);
       }
     },
 
@@ -196,17 +175,8 @@ export default function createBookSlice(set, get) {
           ); // remove from the displayed books on front
         });
       } catch (error) {
-        get().erroSlice.newError(error.message);
+        toast.error(`Error deleting book: ${error.message}`);
       }
     },
-
-    // fetchUserProfileInfo: async (userId) => {
-    //   try {
-    //     const response = await axios.get(`${ROOT_URL}/profile/${userId}`);
-    //     set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
-    //   } catch (error) {
-    //     get().errorSlice.newError(error.message);
-    //   }
-    // },
   };
 }

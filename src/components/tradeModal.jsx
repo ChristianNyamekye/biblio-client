@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, Button, Text, Card, Image, Select,
+  Modal, Button, Text, Card, Image, Select, CloseButton,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
@@ -9,19 +9,35 @@ function TradeModal({
   isOpen, onClose, user, book,
 }) {
   const navigate = useNavigate();
-  const [selectedBookId, setSelectedBookId] = useState('');
+  const [offeredBookId, setOfferedBookId] = useState('');
   const [tradeStatus, setTradeStatus] = useState('');
   const { currUserBooks, fetchUserBooks } = useStore((state) => ({
     currUserBooks: state.biblioSlice.currUserBooks,
     fetchUserBooks: state.biblioSlice.fetchUserBooks,
   }));
 
+  const sendTradeRequest = useStore(({ biblioSlice }) => biblioSlice.sendTradeRequest);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+
+  console.log('trademodal userId', currUser.id);
+
+  console.log('trademodal offeredBookID', offeredBookId);
+  // console.log('trademodal offeredBookId', currUser.id);
+
   useEffect(() => {
     fetchUserBooks();
   }, []);
 
   const handleTradeRequest = () => {
-    setTradeStatus('sent');
+    // setTradeStatus('sent');
+    const requestInfo = {
+      receiverId: book.owner,
+      senderWants: book.id,
+      senderGives: offeredBookId,
+    };
+    sendTradeRequest(currUser.id, requestInfo);
+    navigate('/home');
+    onClose();
   };
 
   const handleKeepLooking = () => {
@@ -30,6 +46,7 @@ function TradeModal({
   };
 
   if (!book) return null;
+  console.log('book info', book);
 
   return (
     <Modal
@@ -62,15 +79,15 @@ function TradeModal({
               label="Choose your book to trade:"
               placeholder="Select a book"
               data={currUserBooks.map(({ id, title }) => ({ value: id, label: title }))}
-              value={selectedBookId}
-              onChange={setSelectedBookId}
+              value={offeredBookId}
+              onChange={setOfferedBookId}
               style={{ marginTop: 14 }}
             />
             <Button
               fullWidth
               style={{ marginTop: 14 }}
               onClick={handleTradeRequest}
-              disabled={!selectedBookId}
+              disabled={!offeredBookId}
             >
               Send Trade Request
             </Button>

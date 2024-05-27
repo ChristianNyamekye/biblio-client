@@ -19,16 +19,15 @@ function Profile() {
 
   const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
 
-  // const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   useEffect(() => {
     fetchUser(userId);
   }, []);
 
-  // console.log('books', currUserBooks[0]);
+  console.log('user object', currUser);
 
-  console.log('user id', currUser);
+  // console.log('user id', currUser);
 
   const handleBookSearch = (e) => {
     setSearchTerm(e.target.value);

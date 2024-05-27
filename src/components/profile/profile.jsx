@@ -18,7 +18,6 @@ function Profile() {
   const { userId } = useParams();
 
   const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
-
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   useEffect(() => {

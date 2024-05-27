@@ -8,34 +8,36 @@ import loginPic from '../assets/log-in.png';
 
 function Login() {
   const loginUser = useStore(({ biblioSlice }) => biblioSlice.loginUser);
+  const authenticated = useStore(({ biblioSlice }) => biblioSlice.authenticated);
 
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
   console.log('login', currUser);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
+    setErrorMessage('');
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
+    setErrorMessage('');
   };
 
   const onClickLogin = async () => {
-    await loginUser({ email, password });
-    setIsUserLoggedIn(true);
-    console.log('logging in user');
-  };
-
-  useEffect(() => {
-    if (isUserLoggedIn && currUser.user.id) {
-      navigate(`/profile/${currUser.user.id}`);
+    const userInfo = { email, password };
+    try {
+      await loginUser(userInfo);
+      navigate(`/profile/${currUser.id}`);
+    } catch {
+      setErrorMessage('Failed to login into account. Please try again.');
     }
-  }, [isUserLoggedIn, currUser, navigate]);
+  };
 
   return (
     <BackgroundImage
@@ -72,6 +74,11 @@ function Login() {
           type="password"
           mb="md"
         />
+        {errorMessage && (
+        <Text color="red" mb="md" align="center">
+          {errorMessage}
+        </Text>
+        )}
         <Button
           fullWidth
           mt="md"

@@ -120,6 +120,17 @@ export default function createBookSlice(set, get) {
       }
     },
 
+    sendTradeRequest: async (userId, requestInfo) => {
+      try {
+        console.log('trade in store', userId, requestInfo);
+        const response = await axios.post(`${ROOT_URL}/users/${userId}/trade`, requestInfo);
+        console.log('in store', response);
+        set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+      }
+    },
+
     // home - fetch all books on database
     fetchAllBooks: async () => {
       try {

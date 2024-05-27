@@ -1,15 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Text, Group, Title, Button, Stack, Card, Divider,
 } from '@mantine/core';
+import axios from 'axios';
 import useStore from '../../store';
 
 function ActiveOffers() {
-  const { sentOffers, receivedOffers } = useStore((state) => ({
-    sentOffers: state.biblioSlice.sentOffers || [],
-    receivedOffers: state.biblioSlice.receivedOffers || [],
-  }));
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+
+  const [sentRequests, setSentRequests] = useState([]);
+  const [receivedRequests, setReceivedRequests] = useState([]);
+
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
+
+  const handleGetSentRequestInfo = async () => {
+    try {
+      const { sentTradeRequests } = currUser;
+      if (sentTradeRequests.length === 0) {
+        console.log('No sent trade requests found.');
+        return;
+      }
+
+      const updatedSentOffers = await Promise.all(sentTradeRequests.map(async (offer) => {
+        const { senderWants, senderGives } = offer;
+        if (!senderWants || !senderGives) {
+          console.log('Invalid book IDs in trade request.');
+          return null;
+        }
+
+        console.log('Fetching details for books:', senderWants, senderGives);
+
+        const [senderWantsResponse, senderGivesResponse] = await Promise.all([
+          axios.get(`${ROOT_URL}/books/${senderWants}`),
+          axios.get(`${ROOT_URL}/books/${senderGives}`),
+        ]);
+
+        return {
+          offerId: offer._id,
+          senderWantsBook: senderWantsResponse.data,
+          senderGivesBook: senderGivesResponse.data,
+          status: offer.status,
+          receiverID: offer.receiverID,
+          requestedDate: offer.requestedDate,
+        };
+      }));
+
+      setSentRequests(updatedSentOffers.filter((offer) => offer !== null));
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetSentRequestInfo();
+  }, [currUser]);
+
+  console.log('sent', sentRequests);
+
+  const handleGetReceivedRequestInfo = async () => {
+    try {
+      const { receivedTradeRequests } = currUser;
+
+      if (receivedTradeRequests.length === 0) {
+        console.log('No received trade requests found.');
+        return;
+      }
+
+      const updatedReceievedOffers = await Promise.all(receivedTradeRequests.map(async (offer) => {
+        const { senderWants, senderGives } = offer;
+
+        if (!senderWants || !senderGives) {
+          console.log('Invalid book IDs in trade request.');
+          return null;
+        }
+
+        console.log('Fetching details for books:', senderWants, senderGives);
+
+        const [senderWantsResponse, senderGivesResponse] = await Promise.all([
+          axios.get(`${ROOT_URL}/books/${senderWants}`),
+          axios.get(`${ROOT_URL}/books/${senderGives}`),
+        ]);
+
+        return {
+          offerId: offer._id,
+          senderWantsBook: senderWantsResponse.data,
+          senderGivesBook: senderGivesResponse.data,
+          status: offer.status,
+          receiverID: offer.receiverID,
+          requestedDate: offer.requestedDate,
+        };
+      }));
+
+      setReceivedRequests(updatedReceievedOffers.filter((offer) => offer !== null));
+    } catch (error) {
+      console.error('Error fetching book details:', error);
+    }
+  };
+
+  useEffect(() => {
+    handleGetReceivedRequestInfo();
+  }, [currUser]);
+
+  console.log('received', receivedRequests);
 
   return (
     <div style={{ maxWidth: 800, margin: '0 auto' }}>
@@ -17,32 +111,30 @@ function ActiveOffers() {
       <Stack spacing="md">
         <div>
           <Text size="lg" weight={500}>Sent Offers</Text>
-          {sentOffers.length > 0 ? sentOffers.map((offer) => (
-            <Card shadow="sm" p="md" key={offer.id} radius="md" withBorder>
-              <Text>@{offer.receiverUsername} sent you an offer!</Text>
-              <Text>Expires: 24 hrs 45 min</Text>
-              <Text>Trade {offer.book.title} for {offer.requestedBook.title}</Text>
-              <Group position="right" mt="md">
-                <Button variant="outline" color="blue">Accept</Button>
-                <Button variant="outline" color="red">Decline</Button>
-              </Group>
-            </Card>
-          )) : <Text>No sent offers</Text>}
+          {sentRequests.map((offer) => (
+            <div key={offer.offerId}>
+              <h3>You Want Book: {offer.senderWantsBook.title}</h3>
+              <p>Author: {offer.senderWantsBook.author}</p>
+              <h3>You Offer Book: {offer.senderGivesBook.title}</h3>
+              <p>Author: {offer.senderGivesBook.author}</p>
+              <p>Status: {offer.status}</p>
+              <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
+            </div>
+          ))}
         </div>
         <Divider />
         <div>
-          <Text size="lg" weight={500}>Received Offers</Text>
-          {receivedOffers.length > 0 ? receivedOffers.map((offer) => (
-            <Card shadow="sm" p="md" key={offer.id} radius="md" withBorder>
-              <Text>@{offer.senderUsername} sent you an offer!</Text>
-              <Text>Expires: 4 hrs 45 min</Text>
-              <Text>Trade {offer.book.title} for {offer.requestedBook.title}</Text>
-              <Group position="right" mt="md">
-                <Button variant="outline" color="blue">Accept</Button>
-                <Button variant="outline" color="red">Decline</Button>
-              </Group>
-            </Card>
-          )) : <Text>No received offers</Text>}
+          <Text size="lg" weight={500}>Recieved Offers</Text>
+          {receivedRequests.map((offer) => (
+            <div key={offer.offerId}>
+              <h3>Other person Wants Book: {offer.senderWantsBook.title}</h3>
+              <p>Author: {offer.senderWantsBook.author}</p>
+              <h3>Other person is Offering Book: {offer.senderGivesBook.title}</h3>
+              <p>Author: {offer.senderGivesBook.author}</p>
+              <p>Status: {offer.status}</p>
+              <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
+            </div>
+          ))}
         </div>
       </Stack>
     </div>

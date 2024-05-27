@@ -24,7 +24,7 @@ function Profile() {
     fetchUser(userId);
   }, []);
 
-  console.log('user object', currUser);
+  console.log('user id', currUser.id);
 
   // console.log('user id', currUser);
 

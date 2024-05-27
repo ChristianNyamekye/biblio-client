@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import axios from 'axios';
 
 const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
@@ -12,35 +11,35 @@ export default function createBookSlice(set, get) {
     userProfileInformation: {},
     currUserBooks: [],
     currUserWishList: [],
-    authenticated: false,
-    hasSignedUpSuccessfully: false,
 
-    // Function to load user based on token in local storage
-    loadUser: () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        set(({ biblioSlice }) => { biblioSlice.authenticated = true; });
-      }
-    },
-
-    // Function to create user
     createUser: async (userInfo) => {
       try {
-        const response = await axios.post(`${ROOT_URL}/register${API_KEY}`, userInfo);
-        set(({ biblioSlice }) => { biblioSlice.hasSignedUpSuccessfully = true; biblioSlice.userProfileInformation = response.data.user; });
-        console.log(`returned token value returned ${response.data.token}\nset authenticated to true ${get().authSlice.authenticated}`);
-        localStorage.setItem('token', response.data.token);
+        console.log('user info', userInfo);
+        const response = await axios.post(`${ROOT_URL}/register`, userInfo);
+        console.log('user response', response.data);
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.userProfileInformation = response.data;
+          },
+          false,
+          'user/createUser',
+        );
       } catch (error) {
-        console.log(`error message: ${error.message}`);
         get().errorSlice.newError(error.message);
       }
     },
 
     loginUser: async (userInfo) => {
       try {
-        const response = await axios.post(`${ROOT_URL}/login${API_KEY}`, userInfo);
-        set(({ biblioSlice }) => { biblioSlice.authenticated = true; biblioSlice.userProfileInformation = response.data.user; console.log(`USER ${JSON.stringify(response.data.user)}${biblioSlice.authenticated}`); });
-        localStorage.setItem('token', response.data.token);
+        console.log(userInfo);
+        const response = await axios.post(`${ROOT_URL}/login`, userInfo);
+        set(
+          ({ biblioSlice }) => {
+            biblioSlice.userProfileInformation = response.data;
+          },
+          false,
+          'user/loginUser',
+        );
       } catch (error) {
         get().errorSlice.newError(error.message);
       }
@@ -201,27 +200,13 @@ export default function createBookSlice(set, get) {
       }
     },
 
-    // Function to sign out user
-    signoutUser: async () => {
-      try {
-        localStorage.removeItem('token');
-        set(({ biblioSlice }) => { biblioSlice.authenticated = false; });
-      } catch (error) {
-        get().errorSlice.newError(error.message);
-      }
-    },
-
-    // Function to delete user
-    deleteUser: async (userId) => {
-      try {
-        localStorage.removeItem('token');
-        const response = await axios.delete(`${ROOT_URL}/users/${userId}${API_KEY}`);
-        console.log(`response after deleting ${JSON.stringify(response.data)}`);
-        set(({ biblioSlice }) => { biblioSlice.authenticated = false; });
-      } catch (error) {
-        console.log(`error message on delete: ${error.message}`);
-        get().errorSlice.newError(error.message);
-      }
-    },
+    // fetchUserProfileInfo: async (userId) => {
+    //   try {
+    //     const response = await axios.get(`${ROOT_URL}/profile/${userId}`);
+    //     set(({ biblioSlice }) => { biblioSlice.userProfileInformation = response.data; }, false, 'posts/fetchUserProfileInfo');
+    //   } catch (error) {
+    //     get().errorSlice.newError(error.message);
+    //   }
+    // },
   };
 }

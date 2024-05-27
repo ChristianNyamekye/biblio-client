@@ -21,17 +21,16 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [isUserCreated, setIsUserCreated] = useState(false);
 
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const { createUser, hasSignedUpSuccessfully } = useStore((state) => state.biblioSlice);
-  const currUser = useStore((state) => state.biblioSlice.userProfileInformation);
+  const createUser = useStore(({ biblioSlice }) => biblioSlice.createUser);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   useEffect(() => {
-    if (currUser && hasSignedUpSuccessfully) {
-      navigate('/login');
+    if (isUserCreated && currUser.id) {
+      navigate(`/profile/${currUser.id}`);
     }
-  }, [currUser, hasSignedUpSuccessfully, navigate]);
+  }, [isUserCreated, currUser, navigate]);
 
   const handleNameChange = (e) => setName(e.target.value);
   const handleUsernameChange = (e) => setUsername(e.target.value);
@@ -39,14 +38,10 @@ function Signup() {
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
   const onClickRegister = async () => {
-    const userInfo = {
+    await createUser({
       name, username, email, password,
-    };
-    try {
-      await createUser(userInfo);
-    } catch {
-      setErrorMessage('Failed to create account. Please try again.');
-    }
+    });
+    setIsUserCreated(true);
   };
 
   return (
@@ -97,11 +92,6 @@ function Signup() {
           <TextInput onChange={handleUsernameChange} label="Username" required />
           <TextInput onChange={handleEmailChange} label="Email address" required type="email" />
           <TextInput onChange={handlePasswordChange} label="Password" required type="password" description="Your password needs to be at least 8 characters." />
-          {errorMessage && (
-            <Text color="red" mb="md" align="center">
-              {errorMessage}
-            </Text>
-          )}
           <Button onClick={onClickRegister} fullWidth mt="lg" color="indigo">Create an account</Button>
         </Paper>
       </Container>

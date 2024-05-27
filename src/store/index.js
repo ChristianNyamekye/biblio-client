@@ -5,7 +5,6 @@ import createBookSlice from './biblio-store_slice';
 
 const useStore = create(devtools(immer((...args) => ({
   biblioSlice: createBookSlice(...args),
-  authType: 'token',
 }))));
 
 export default useStore;

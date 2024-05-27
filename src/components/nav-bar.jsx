@@ -1,27 +1,11 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import useStore from '../store';
 
 function NavBar() {
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
-  const navigate = useNavigate();
-  const signoutUser = useStore(({ biblioSlice }) => biblioSlice.signoutUser);
-  const deleteUser = useStore(({ biblioSlice }) => biblioSlice.deleteUser);
-  const authenticated = useStore(({ biblioSlice }) => biblioSlice.authenticated);
 
-  const handleLogout = () => {
-    signoutUser(); // Clears authentication state
-    navigate('/login'); // Redirects to login page
-  };
-  const handleDeleteUser = async () => {
-    try {
-      await deleteUser(currUser.id);
-      navigate('/signup');
-    } catch (error) {
-      throw new Error(`failed ${error.message}`);
-    }
-  };
   return (
     <nav className="navbar">
       <Link to="/" className="brand-header" style={{ textDecoration: 'none' }}>
@@ -30,7 +14,7 @@ function NavBar() {
       </Link>
       <div className="menu-items">
         <ul>
-          {authenticated ? (
+          {currUser && currUser.id ? (
             <>
               <li>
                 <Link to="/home">Home</Link>
@@ -40,12 +24,6 @@ function NavBar() {
               </li>
               <li>
                 <Link to="/how-it-works">How It Works</Link>
-              </li>
-              <li>
-                <Link to="/login" onClick={handleLogout}>Logout</Link>
-              </li>
-              <li>
-                <Link to="/signup" onClick={handleDeleteUser}>DeleteUser</Link>
               </li>
             </>
           ) : (

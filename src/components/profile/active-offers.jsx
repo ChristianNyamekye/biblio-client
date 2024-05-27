@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Text, Group, Title, Button, Stack, Card, Divider,
+  SimpleGrid,
 } from '@mantine/core';
 import axios from 'axios';
 import useStore from '../../store';
@@ -117,41 +118,52 @@ function ActiveOffers() {
   };
 
   return (
-    <div style={{ maxWidth: 800, maxHeight: 1000, margin: '0 auto' }}>
-      <Title order={2}>Active Offers</Title>
-      <Stack spacing="md">
-        <div>
-          <Text size="lg" weight={500}>Sent Offers</Text>
-          {sentRequests.map((offer) => (
-            <div key={offer.offerId}>
-              <h3>You Want Book: {offer.senderWantsBook.title}</h3>
-              <p>Author: {offer.senderWantsBook.author}</p>
-              <h3>You Offer Book: {offer.senderGivesBook.title}</h3>
-              <p>Author: {offer.senderGivesBook.author}</p>
-              <p>Status: {offer.status}</p>
-              <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
-            </div>
-          ))}
-          {/* // including conditional where if status is declined the box modal is outlined in red */}
+    <div className="center-dash">
+      <div className="center-dash-header">
+        <Text size="xl" fw={700} color="indigo">Active Offers</Text>
+      </div>
+      <Stack>
+        <div className="offers-section">
+          <h3 className="offer-subtitle">Sent Offers</h3>
+          <SimpleGrid cols={3} spacing="md">
+            {sentRequests.map((offer) => (
+              <div key={offer.offerId} className="offer-card">
+                <div className="offer-header">
+                  <span className="highlight">Requested Book:</span> {offer.senderWantsBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
+                <div className="offer-header">
+                  <span className="highlight">Offered Book:</span> {offer.senderGivesBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
+                <div className="offer-text">Status: {offer.status}</div>
+                <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
-        <Divider />
-        <div>
-          <Text size="lg" weight={500}>Recieved Offers</Text>
-          {receivedRequests.map((offer) => (
-            <div key={offer.offerId}>
-              <h3>Other person Wants Book: {offer.senderWantsBook.title}</h3>
-              <p>Author: {offer.senderWantsBook.author}</p>
-              <h3>Other person is Offering Book: {offer.senderGivesBook.title}</h3>
-              <p>Author: {offer.senderGivesBook.author}</p>
-              <p>Status: {offer.status}</p>
-              <p>Requested Date: {new Date(offer.requestedDate).toLocaleString()}</p>
-              <Group position="right" mt="md">
-                <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
-                <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
-              </Group>
-
-            </div>
-          ))}
+        <div className="offers-section">
+          <h3 className="offer-subtitle">Received Offers</h3>
+          <SimpleGrid cols={3} spacing="md">
+            {receivedRequests.map((offer) => (
+              <div key={offer.offerId} className="offer-card">
+                <div className="offer-header">
+                  <span className="highlight">Other Person Wants Book:</span> {offer.senderWantsBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
+                <div className="offer-header">
+                  <span className="highlight">Other Person is Offering Book:</span> {offer.senderGivesBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
+                <div className="offer-text">Status: {offer.status}</div>
+                <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                <Group position="right" mt="md">
+                  <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
+                  <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+                </Group>
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
       </Stack>
     </div>

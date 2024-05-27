@@ -202,3 +202,33 @@ main {
 .wishlist-icon.active {
   color: red;
 }
+.offer-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px 0;
+  border: 1px solid #e0e0e0;
+  max-width: 400px;
+  min-width: 200px;
+}
+.offer-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+.offer-text {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
+}
+.lib-card-holder {
+  display: flex;
+  justify-content: space-between;
+  align-items: start; 
+  flex-wrap: wrap; 
+}
+.highlight {
+  color: #4C6EF5; 
+}

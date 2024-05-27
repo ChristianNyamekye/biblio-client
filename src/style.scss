@@ -203,34 +203,32 @@ main {
   color: red;
 }
 .offer-card {
-  background-color: #fff; /* White background */
-  border-radius: 8px; /* Rounded corners */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  padding: 20px; /* Padding inside the card */
-  margin: 10px 0; /* Space between cards */
-  border: 1px solid #e0e0e0; /* Light border for definition */
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 10px 0;
+  border: 1px solid #e0e0e0;
   max-width: 400px;
   min-width: 200px;
 }
-
 .offer-header {
-  font-size: 16px; /* Larger font size for headers */
-  font-weight: bold; /* Make header bold */
-  color: #333; /* Dark grey color for text */
-  margin-bottom: 5px; /* Space below the header */
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
 }
-
 .offer-text {
-  font-size: 14px; /* Standard text size */
-  color: #666; /* Lighter text color */
-  margin-bottom: 5px; /* Space below each text line */
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 5px;
 }
 .lib-card-holder {
-  display: flex; /* Enable flexbox */
-  justify-content: space-between; /* Space between the two main divs */
-  align-items: start; /* Align items at the start of the div */
-  flex-wrap: wrap; /* Allows items to wrap as needed */
+  display: flex;
+  justify-content: space-between;
+  align-items: start; 
+  flex-wrap: wrap; 
 }
 .highlight {
-  color: #4C6EF5; /* Example: a bright blue */
+  color: #4C6EF5; 
 }

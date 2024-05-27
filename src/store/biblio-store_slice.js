@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
 const API_KEY = '?key=biblio';
-const ROOT_URL = 'http://localhost:9090/api';
+// const ROOT_URL = 'http://localhost:9090/api';
 
 export default function createBookSlice(set, get) {
   return {
@@ -123,7 +123,7 @@ export default function createBookSlice(set, get) {
     // home - fetch all books on database
     fetchAllBooks: async () => {
       try {
-        const response = await axios.get(`${ROOT_URL}/books`);
+        const response = await axios.get(`${ROOT_URL}/books/all-uploaded`);
         set(
           ({ biblioSlice }) => {
             biblioSlice.allBooks = response.data;

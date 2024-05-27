@@ -141,10 +141,6 @@ function ActiveOffers() {
             <div key={offer.offerId}>
               <h3>Other person Wants Book: {offer.senderWantsBook.title}</h3>
               <p>Author: {offer.senderWantsBook.author}</p>
-              <Group position="right" mt="md">
-                <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
-                <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
-              </Group>
               <h3>Other person is Offering Book: {offer.senderGivesBook.title}</h3>
               <p>Author: {offer.senderGivesBook.author}</p>
               <p>Status: {offer.status}</p>

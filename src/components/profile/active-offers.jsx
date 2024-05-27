@@ -157,6 +157,10 @@ function ActiveOffers() {
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
                 <div className="offer-text">Status: {offer.status}</div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                <Group position="right" mt="md">
+                  <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
+                  <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+                </Group>
               </div>
             ))}
           </SimpleGrid>

@@ -14,15 +14,16 @@ import {
 } from '@mantine/core';
 import { IconCirclePlus, IconHeart, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
+import { useParams } from 'react-router';
 import BookModal from '../bookModal';
 import useStore from '../../store';
 
-function Library({ userId }) {
+function Library() {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
-
+  const { userId } = useParams();
   const fetchUserBooks = useStore(
     ({ biblioSlice }) => biblioSlice.fetchUserBooks,
   );
@@ -32,10 +33,11 @@ function Library({ userId }) {
 
   console.log('books in lib', currUserBooks);
 
-  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-  // const ROOT_URL = 'http://localhost:9090/api';
+  // const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  const ROOT_URL = 'http://localhost:9090/api';
 
   useEffect(() => {
+    console.log(`USER ID ${userId}`);
     fetchUserBooks(userId);
   }, []);
 
@@ -56,7 +58,8 @@ function Library({ userId }) {
       const fetchBooks = async () => {
         try {
           const response = await axios.get(
-            'https://project-api-biblio.onrender.com/api/books/search',
+            // 'https://project-api-biblio.onrender.com/api/books/search',
+            'http://localhost:9090/api/books/search',
             {
               params: { query: searchTerm },
             },
@@ -98,8 +101,8 @@ function Library({ userId }) {
         console.log('userid:', userId);
         console.log('details:', bookDetails);
         const response = await axios.post(
-          'https://project-api-biblio.onrender.com/api/books',
-          // 'http://localhost:9090/api/books',
+          // 'https://project-api-biblio.onrender.com/api/books',
+          'http://localhost:9090/api/books',
           {
             userId,
             bookDetails,

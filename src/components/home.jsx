@@ -28,16 +28,9 @@ function Home() {
   const fetchAllBooks = useStore(({ biblioSlice }) => biblioSlice.fetchAllBooks);
   const allBooks = useStore(({ biblioSlice }) => biblioSlice.allBooks);
 
-  // const sendTradeRequest = useStore(({ biblioSlice }) => biblioSlice.sendTradeRequest);
-  // const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
-
-  // console.log('home', currUser.id);
-
   useEffect(() => {
     fetchAllBooks();
   }, []);
-
-  // console.log(allBooks);
 
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();

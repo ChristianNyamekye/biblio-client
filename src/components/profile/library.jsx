@@ -23,17 +23,13 @@ function Library({ userId }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  const fetchUserBooks = useStore(
-    ({ biblioSlice }) => biblioSlice.fetchUserBooks,
-  );
-  const currUserBooks = useStore(
-    ({ biblioSlice }) => biblioSlice.currUserBooks,
-  );
+  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
+  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
 
   console.log('books in lib', currUserBooks);
 
-  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-  // const ROOT_URL = 'http://localhost:9090/api';
+  // const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  const ROOT_URL = 'http://localhost:9090/api';
 
   useEffect(() => {
     fetchUserBooks(userId);
@@ -98,8 +94,8 @@ function Library({ userId }) {
         console.log('userid:', userId);
         console.log('details:', bookDetails);
         const response = await axios.post(
-          'https://project-api-biblio.onrender.com/api/books',
-          // 'http://localhost:9090/api/books',
+          // 'https://project-api-biblio.onrender.com/api/books',
+          'http://localhost:9090/api/books',
           {
             userId,
             bookDetails,
@@ -121,7 +117,7 @@ function Library({ userId }) {
   const handleDeleteBook = async (bookId) => {
     try {
       await axios.delete(`${ROOT_URL}/books/${bookId}`);
-      fetchUserBooks(userId); // Re-fetch user's books after deletion
+      fetchUserBooks(userId);
     } catch (error) {
       console.error('Error deleting book:', error);
     }

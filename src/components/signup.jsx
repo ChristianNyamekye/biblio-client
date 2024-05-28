@@ -47,14 +47,14 @@ function Signup() {
   return (
     <Container size="lg"
       style={{
-        paddingTop: '5vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
+        height: '84vh',
       }}
     >
-      <Box style={{ textAlign: 'center', marginBottom: '20px' }}>
+      <Box style={{ textAlign: 'center', marginTop: '40px' }}>
         <Title order={1} style={{ fontSize: '30px', marginBottom: '10px' }}>Join bibilio today!</Title>
         <Text>Build community, read more, and save money.</Text>
       </Box>

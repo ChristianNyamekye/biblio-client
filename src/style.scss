@@ -4,9 +4,6 @@ html, body {
   height: 100%; 
   margin: 0;   
 }
-// :root {
-//   text-size-adjust: 100%;
-// }
 #root, .App {
   display: flex;
   flex-direction: column;
@@ -20,6 +17,7 @@ html, body {
   z-index: 1000;
   padding: 2vh;
   height: 8vh;
+  width: 100vw;
 }
 .brand-header{
   font-family: "Poppins", sans-serif;

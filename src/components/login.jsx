@@ -42,20 +42,18 @@ function Login() {
       src={loginPic}
       radius="sm"
       style={{
-        width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+        width: 'auto', height: '84vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
       }}
     >
-
       <Paper radius="md"
         p="xl"
         withBorder
-        style={{
-          minWidth: 700, maxWidth: 800, margin: 'auto', marginTop: 200, minHeight: 300,
-        }}
+        style={{ minWidth: 700, maxWidth: 800, minHeight: 300 }}
       >
         <Title order={2} align="center" mb="xl" style={{ fontSize: '32px' }}>
           Log in
         </Title>
+
         <TextInput
           onChange={handleEmailChange}
           label="Email address"

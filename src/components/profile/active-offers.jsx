@@ -13,8 +13,8 @@ function ActiveOffers() {
   const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
-  // const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
-  const ROOT_URL = 'http://localhost:9090/api';
+  const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
+  // const ROOT_URL = 'http://localhost:9090/api';
 
   const handleGetSentRequestInfo = async () => {
     try {

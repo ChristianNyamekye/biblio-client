@@ -8,11 +8,13 @@ import {
   Select,
   Card,
   Image,
-  SimpleGrid,
   Autocomplete,
   Group,
+  Grid,
+  ActionIcon,
 } from '@mantine/core';
-import { IconCirclePlus, IconHeart, IconTrash } from '@tabler/icons-react';
+import { toast } from 'react-toastify';
+import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
 import useStore from '../../store';
@@ -117,6 +119,7 @@ function Library({ userId }) {
   const handleDeleteBook = async (bookId) => {
     try {
       await axios.delete(`${ROOT_URL}/books/${bookId}`);
+      toast.success('Book deleted successfully');
       fetchUserBooks(userId);
     } catch (error) {
       console.error('Error deleting book:', error);
@@ -197,24 +200,39 @@ function Library({ userId }) {
             <Text size="sm" c="dimmed">
               {book.author}
             </Text>
-            <SimpleGrid cols={1}>
-              <Button
-                color="indigo"
-                fullWidth
-                mt="md"
-                radius="md"
-                onClick={() => handleViewBook(book)}
+            <Grid
+              mt="md"
+              columns={2}
+              justify="center"
+              align="center"
+              gutter="xs"
+            >
+              <Grid.Col
+                span={1.5}
               >
-                View Book
-              </Button>
-            </SimpleGrid>
-            <Group spacing="xs">
-              <IconTrash
-                size={16}
-                className="delete-icon"
-                onClick={() => handleDeleteBook(book._id)}
-              />
-            </Group>
+                <Button
+                  color="indigo"
+                  fullWidth
+                  radius="md"
+                  onClick={() => handleViewBook(book)}
+                >
+                  View Book
+                </Button>
+              </Grid.Col>
+              <Grid.Col
+                span={0.5}
+              >
+                <ActionIcon
+                  variant="outline"
+                  color="red"
+                  size="lg"
+                  onClick={() => handleDeleteBook(book._id)}
+                >
+                  <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                </ActionIcon>
+              </Grid.Col>
+            </Grid>
+
           </Card>
         ))}
       </div>

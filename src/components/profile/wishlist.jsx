@@ -1,11 +1,12 @@
 /* eslint-disable no-alert */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, Button, Card, Image, Group, SimpleGrid, Modal, Autocomplete,
+  Text, Button, Card, Image, Group, Grid, Modal, Autocomplete, ActionIcon,
 } from '@mantine/core';
 import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import useStore from '../../store';
 import BookModal from '../bookModal';
 
@@ -105,7 +106,8 @@ function Wishlist({ userId }) {
   const handleRemoveFromWishlist = async (bookId) => {
     try {
       await axios.delete(`${ROOT_URL}/users/${userId}/wishlist/${bookId}`);
-      fetchUserWishList(userId); // Refresh the list after deletion
+      toast.success('Book deleted successfully');
+      fetchUserWishList(userId);
     } catch (error) {
       console.error('Error removing book from wishlist:', error);
     }
@@ -177,24 +179,38 @@ function Wishlist({ userId }) {
             <Text size="sm" c="dimmed">
               {book.author}
             </Text>
-            <SimpleGrid cols={1}>
-              <Button
-                color="indigo"
-                fullWidth
-                mt="md"
-                radius="md"
-                onClick={() => handleViewBook(book)}
+            <Grid
+              mt="md"
+              columns={2}
+              justify="center"
+              align="center"
+              gutter="xs"
+            >
+              <Grid.Col
+                span={1.5}
               >
-                View Book
-              </Button>
-            </SimpleGrid>
-            <Group>
-              <IconTrash
-                size={16}
-                className="delete-icon"
-                onClick={() => handleRemoveFromWishlist(book.id)}
-              />
-            </Group>
+                <Button
+                  color="indigo"
+                  fullWidth
+                  radius="md"
+                  onClick={() => handleViewBook(book)}
+                >
+                  View Book
+                </Button>
+              </Grid.Col>
+              <Grid.Col
+                span={0.5}
+              >
+                <ActionIcon
+                  variant="outline"
+                  color="red"
+                  size="lg"
+                  onClick={() => handleRemoveFromWishlist(book.id)}
+                >
+                  <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                </ActionIcon>
+              </Grid.Col>
+            </Grid>
           </Card>
         ))}
       </div>

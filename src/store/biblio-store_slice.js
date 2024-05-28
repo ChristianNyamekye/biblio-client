@@ -42,7 +42,7 @@ export default function createBookSlice(set, get) {
           'user/loginUser',
         );
       } catch (error) {
-        toast.error(`Error loggin in: ${error.message}`);
+        toast.error(`Error logging in: ${error.message}`);
       }
     },
 
@@ -75,16 +75,14 @@ export default function createBookSlice(set, get) {
           false,
           'user/fetchUserBooks',
         );
-        toast.success('Books loaded successfully');
       } catch (error) {
-        toast.error(`Error loading books: ${error.message}`);
+        // toast.error(`Error loading books: ${error.message}`);
       }
     },
 
     fetchUserWishList: async (userId) => {
       try {
         console.log('in store', userId);
-        // /users/:userId/wishlist
         const response = await axios.get(
           `${ROOT_URL}/users/${userId}/wishlist`,
         );
@@ -124,13 +122,23 @@ export default function createBookSlice(set, get) {
 
     sendTradeRequest: async (userId, requestInfo) => {
       try {
-        console.log('trade in store', userId, requestInfo);
         const response = await axios.post(`${ROOT_URL}/users/${userId}/trade`, requestInfo);
         toast.success('Trade request successfully');
-        set(({ biblioSlice }) => { biblioSlice.currUserWishList = response.data; }, false, 'user/fetchUserWishlist');
       } catch (error) {
         get().errorSlice.newError(error.message);
         toast.error(`Error sending trade request: ${error.message}`);
+      }
+    },
+
+    updateTradeRequest: async (userId, tradeId, newStatus) => {
+      try {
+        console.log(userId, tradeId, newStatus);
+        const response = await axios.put(`${ROOT_URL}/users/${userId}/trade/${tradeId}`, newStatus);
+        console.log('in store', response);
+        toast.success('Trade response sent!');
+      } catch (error) {
+        get().errorSlice.newError(error.message);
+        toast.error(`Error sending trade reponse: ${error.message}`);
       }
     },
 
@@ -157,9 +165,9 @@ export default function createBookSlice(set, get) {
         if (fromProfile) {
           response = await axios.put(`${ROOT_URL}/books${API_KEY}`, bookInfo);
         } else {
-          response = await axios.put(`${ROOT_URL}/books${API_KEY}`, bookInfo); // backend request
+          response = await axios.put(`${ROOT_URL}/books${API_KEY}`, bookInfo);
         }
-        set(({ biblioSlice }) => biblioSlice.allBooks.push(response.data)); // update resource for frontend
+        set(({ biblioSlice }) => biblioSlice.allBooks.push(response.data));
       } catch (error) {
         toast.error(`Error uploading book: ${error.message}`);
       }
@@ -168,11 +176,11 @@ export default function createBookSlice(set, get) {
     // person intending to lend book can i delete their book
     deleteBook: async (id) => {
       try {
-        await axios.delete(`${ROOT_URL}/display/${id}${API_KEY}`); // delete on the backend side
+        await axios.delete(`${ROOT_URL}/display/${id}${API_KEY}`);
         set(({ biblioSlice }) => {
           biblioSlice.allBooks = biblioSlice.allBooks.filter(
             (book) => book.id !== id,
-          ); // remove from the displayed books on front
+          );
         });
       } catch (error) {
         toast.error(`Error deleting book: ${error.message}`);

@@ -19,17 +19,11 @@ function TradeModal({
   const sendTradeRequest = useStore(({ biblioSlice }) => biblioSlice.sendTradeRequest);
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
-  console.log('trademodal userId', currUser.id);
-
-  console.log('trademodal offeredBookID', offeredBookId);
-  // console.log('trademodal offeredBookId', currUser.id);
-
   useEffect(() => {
     fetchUserBooks();
   }, []);
 
   const handleTradeRequest = () => {
-    // setTradeStatus('sent');
     const requestInfo = {
       receiverId: book.owner,
       senderWants: book.id,

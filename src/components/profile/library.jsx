@@ -23,12 +23,8 @@ function Library({ userId }) {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedBook, setSelectedBook] = useState(null);
 
-  const fetchUserBooks = useStore(
-    ({ biblioSlice }) => biblioSlice.fetchUserBooks,
-  );
-  const currUserBooks = useStore(
-    ({ biblioSlice }) => biblioSlice.currUserBooks,
-  );
+  const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
+  const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
 
   console.log('books in lib', currUserBooks);
 
@@ -121,7 +117,7 @@ function Library({ userId }) {
   const handleDeleteBook = async (bookId) => {
     try {
       await axios.delete(`${ROOT_URL}/books/${bookId}`);
-      fetchUserBooks(userId); // Re-fetch user's books after deletion
+      fetchUserBooks(userId);
     } catch (error) {
       console.error('Error deleting book:', error);
     }

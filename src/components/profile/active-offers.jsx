@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  Text, Group, Title, Button, Stack, Card, Divider,
-  SimpleGrid,
+  Text, Group, Button, Stack, SimpleGrid,
 } from '@mantine/core';
 import axios from 'axios';
 import useStore from '../../store';
 
 function ActiveOffers() {
-  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
-
   const [sentRequests, setSentRequests] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
+
+  const updateTradeRequest = useStore(({ biblioSlice }) => biblioSlice.updateTradeRequest);
+  const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
   // const ROOT_URL = 'http://localhost:9090/api';
@@ -30,8 +30,6 @@ function ActiveOffers() {
           console.log('Invalid book IDs in trade request.');
           return null;
         }
-
-        console.log('Fetching details for books:', senderWants, senderGives);
 
         const [senderWantsResponse, senderGivesResponse] = await Promise.all([
           axios.get(`${ROOT_URL}/books/${senderWants}`),
@@ -54,12 +52,6 @@ function ActiveOffers() {
     }
   };
 
-  useEffect(() => {
-    handleGetSentRequestInfo();
-  }, [currUser]);
-
-  console.log('sent', sentRequests);
-
   const handleGetReceivedRequestInfo = async () => {
     try {
       const { receivedTradeRequests } = currUser;
@@ -77,12 +69,14 @@ function ActiveOffers() {
           return null;
         }
 
-        console.log('Fetching details for books:', senderWants, senderGives);
-
         const [senderWantsResponse, senderGivesResponse] = await Promise.all([
           axios.get(`${ROOT_URL}/books/${senderWants}`),
           axios.get(`${ROOT_URL}/books/${senderGives}`),
         ]);
+
+        const senderUserObject = await axios.get(`${ROOT_URL}/trade-user/${offer.senderID}`);
+
+        console.log('inside func', senderUserObject.data);
 
         return {
           offerId: offer._id,
@@ -91,6 +85,9 @@ function ActiveOffers() {
           status: offer.status,
           receiverID: offer.receiverID,
           requestedDate: offer.requestedDate,
+          senderUsername: senderUserObject.data.username,
+          senderEmail: senderUserObject.data.email,
+
         };
       }));
 
@@ -105,17 +102,16 @@ function ActiveOffers() {
     handleGetReceivedRequestInfo();
   }, [currUser]);
 
-  console.log('received', receivedRequests);
-
-  const updateOfferStatus = async (offerId, newStatus) => {
+  const handleUpdateTrade = async (offerId, newStatus) => {
     try {
-      await axios.patch(`${ROOT_URL}/trade-requests/${offerId}`, { status: newStatus });
-      handleGetSentRequestInfo();
-      handleGetReceivedRequestInfo();
+      await updateTradeRequest(currUser.id, offerId, { newStatus });
+      await fetchUser(currUser.id);
     } catch (error) {
-      console.error('Error updating offer status:', error);
+      console.error('Error updating trade request:', error);
     }
   };
+
+  console.log(receivedRequests);
 
   return (
     <div className="center-dash">
@@ -129,11 +125,11 @@ function ActiveOffers() {
             {sentRequests.map((offer) => (
               <div key={offer.offerId} className="offer-card">
                 <div className="offer-header">
-                  <span className="highlight">Requested Book:</span> {offer.senderWantsBook.title}
+                  <span className="highlight">You Requested:</span> {offer.senderWantsBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
                 <div className="offer-header">
-                  <span className="highlight">Offered Book:</span> {offer.senderGivesBook.title}
+                  <span className="highlight">You Offered:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
                 <div className="offer-text">Status: {offer.status}</div>
@@ -148,18 +144,18 @@ function ActiveOffers() {
             {receivedRequests.map((offer) => (
               <div key={offer.offerId} className="offer-card">
                 <div className="offer-header">
-                  <span className="highlight">Other Person Wants Book:</span> {offer.senderWantsBook.title}
+                  <span className="highlight">{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
                 <div className="offer-header">
-                  <span className="highlight">Other Person is Offering Book:</span> {offer.senderGivesBook.title}
+                  <span className="highlight">{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
                 <div className="offer-text">Status: {offer.status}</div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
                 <Group position="right" mt="md">
-                  <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
-                  <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+                  <Button onClick={() => handleUpdateTrade(offer.offerId, 'accepted')} color="green">Accept</Button>
+                  <Button onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
                 </Group>
               </div>
             ))}

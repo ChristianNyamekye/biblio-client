@@ -74,34 +74,36 @@ function BookModal({ opened, onClose, book }) {
                 )}
               </Group>
             </Group>
-            <Text size="md" mb="sm" weight={500} style={{ marginTop: 20 }}>
-              Related
-            </Text>
             {relatedBooks.length > 0 ? (
-              <SimpleGrid cols={3} spacing="sm">
-                {relatedBooks.map(
-                  (
-                    relatedBook, // Ensure relatedBook has a unique identifier, for example `id`
-                  ) => (
-                    <Card key={relatedBook.id} shadow="sm" p="lg">
-                      {' '}
-                      <Card.Section>
-                        <Image
-                          src={relatedBook.coverImage}
-                          alt={`${relatedBook.title} cover`}
-                          height={120}
-                          fit="contain"
-                        />
-                      </Card.Section>
-                      <Text size="sm" style={{ marginTop: 10 }}>
-                        {relatedBook.title}
-                      </Text>
-                    </Card>
-                  ),
-                )}
+              <SimpleGrid>
+                <Text size="md" mb="sm" weight={500} style={{ marginTop: 20 }}>
+                  You May Also Like
+                </Text>
+                <SimpleGrid cols={3} spacing="sm">
+                  {relatedBooks.map(
+                    (
+                      relatedBook, // Ensure relatedBook has a unique identifier, for example `id`
+                    ) => (
+                      <Card key={relatedBook.id} shadow="sm" p="lg">
+                        {' '}
+                        <Card.Section>
+                          <Image
+                            src={relatedBook.coverImage}
+                            alt={`${relatedBook.title} cover`}
+                            height={120}
+                            fit="contain"
+                          />
+                        </Card.Section>
+                        <Text size="sm" style={{ marginTop: 10 }}>
+                          {relatedBook.title}
+                        </Text>
+                      </Card>
+                    ),
+                  )}
+                </SimpleGrid>
               </SimpleGrid>
             ) : (
-              <Text>No related books found.</Text>
+              <Text />
             )}
             <Group position="left" style={{ width: '100%', marginTop: 20 }}>
               <Button

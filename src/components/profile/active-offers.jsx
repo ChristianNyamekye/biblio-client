@@ -1,6 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, Group, Button, Stack, SimpleGrid,
+  Text, Group, Button, Stack, SimpleGrid, Popover,
 } from '@mantine/core';
 import axios from 'axios';
 import useStore from '../../store';
@@ -31,10 +32,14 @@ function ActiveOffers() {
           return null;
         }
 
+        console.log('here', offer);
+
         const [senderWantsResponse, senderGivesResponse] = await Promise.all([
           axios.get(`${ROOT_URL}/books/${senderWants}`),
           axios.get(`${ROOT_URL}/books/${senderGives}`),
         ]);
+
+        const receiverUserObject = await axios.get(`${ROOT_URL}/trade-user/${offer.receiverID}`);
 
         return {
           offerId: offer._id,
@@ -43,6 +48,7 @@ function ActiveOffers() {
           status: offer.status,
           receiverID: offer.receiverID,
           requestedDate: offer.requestedDate,
+          receiverEmail: receiverUserObject.data.email,
         };
       }));
 
@@ -75,8 +81,6 @@ function ActiveOffers() {
         ]);
 
         const senderUserObject = await axios.get(`${ROOT_URL}/trade-user/${offer.senderID}`);
-
-        console.log('inside func', senderUserObject.data);
 
         return {
           offerId: offer._id,
@@ -123,7 +127,13 @@ function ActiveOffers() {
           <h3 className="offer-subtitle">Sent Offers</h3>
           <SimpleGrid cols={3} spacing="md">
             {sentRequests.map((offer) => (
-              <div key={offer.offerId} className="offer-card">
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
                 <div className="offer-header">
                   <span className="highlight">You Requested:</span> {offer.senderWantsBook.title}
                 </div>
@@ -132,8 +142,25 @@ function ActiveOffers() {
                   <span className="highlight">You Offered:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                <div className="offer-text">Status: {offer.status}</div>
+                <div
+                  className="offer-text"
+                  style={{
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
+                  }}
+                >
+                  Status: {offer.status}
+                </div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.receiverEmailEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
               </div>
             ))}
           </SimpleGrid>
@@ -142,21 +169,47 @@ function ActiveOffers() {
           <h3 className="offer-subtitle">Received Offers</h3>
           <SimpleGrid cols={3} spacing="md">
             {receivedRequests.map((offer) => (
-              <div key={offer.offerId} className="offer-card">
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
                 <div className="offer-header">
-                  <span className="highlight">{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
+                  <span className="highlight">@{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
                 <div className="offer-header">
-                  <span className="highlight">{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
+                  <span className="highlight">@{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                <div className="offer-text">Status: {offer.status}</div>
+                <div
+                  className="offer-text"
+                  style={{
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
+                  }}
+                >
+                  Status: {offer.status}
+                </div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'pending' && (
                 <Group position="right" mt="md">
                   <Button onClick={() => handleUpdateTrade(offer.offerId, 'accepted')} color="green">Accept</Button>
-                  <Button onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
+                  <Button variant="outline" onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
                 </Group>
+                )}
+
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.senderEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
               </div>
             ))}
           </SimpleGrid>

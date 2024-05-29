@@ -104,12 +104,14 @@ function ActiveOffers() {
   useEffect(() => {
     handleGetSentRequestInfo();
     handleGetReceivedRequestInfo();
-  }, [currUser]);
+  }, []);
 
   const handleUpdateTrade = async (offerId, newStatus) => {
     try {
       await updateTradeRequest(currUser.id, offerId, { newStatus });
       await fetchUser(currUser.id);
+      handleGetSentRequestInfo();
+      handleGetReceivedRequestInfo();
     } catch (error) {
       console.error('Error updating trade request:', error);
     }
@@ -157,7 +159,7 @@ function ActiveOffers() {
                     <Button fullWidth color="indigo">Email User</Button>
                   </Popover.Target>
                   <Popover.Dropdown>
-                    <Text size="sm">@{offer.receiverEmailEmail}</Text>
+                    <Text size="sm">@{offer.receiverEmail}</Text>
                   </Popover.Dropdown>
                 </Popover>
                 )}

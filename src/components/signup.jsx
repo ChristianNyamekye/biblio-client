@@ -5,7 +5,6 @@ import {
   Paper,
   Title,
   Text,
-  BackgroundImage,
   Anchor,
   Container,
   Box,

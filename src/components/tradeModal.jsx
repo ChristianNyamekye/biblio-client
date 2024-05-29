@@ -10,6 +10,7 @@ function TradeModal({
 }) {
   const navigate = useNavigate();
   const [offeredBookId, setOfferedBookId] = useState('');
+  const [tradeStatus, setTradeStatus] = useState('');
   const { currUserBooks, fetchUserBooks } = useStore((state) => ({
     currUserBooks: state.biblioSlice.currUserBooks,
     fetchUserBooks: state.biblioSlice.fetchUserBooks,

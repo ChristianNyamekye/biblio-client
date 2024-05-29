@@ -12,9 +12,10 @@ import {
   Group,
   Grid,
   ActionIcon,
+  Center,
 } from '@mantine/core';
 import { toast } from 'react-toastify';
-import { IconCirclePlus, IconTrash } from '@tabler/icons-react';
+import { IconCirclePlus, IconTrash, IconAlertOctagon } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
 import BookModal from '../bookModal';
 import useStore from '../../store';
@@ -178,63 +179,71 @@ function Library({ userId }) {
       </div>
 
       <div className="library-card-holder">
-        {currUserBooks.map((book) => (
-          <Card
-            key={book.id}
-            shadow="sm"
-            padding="lg"
-            radius="md"
-            className="post-card"
-          >
-            <Card.Section>
-              <Image
-                src={book.coverImage}
-                height={300}
-                width={0}
-                alt={book.title}
-              />
-            </Card.Section>
-            <Group position="apart" mt="md" mb="xs">
-              <Text fw={500}>{book.title}</Text>
-            </Group>
-            <Text size="sm" c="dimmed">
-              {book.author}
+        {currUserBooks.length === 0 ? (
+          <Center style={{ flexDirection: 'column', height: '100%', paddingTop: '150px' }}>
+            <IconAlertOctagon size={48} strokeWidth={2} color="#4C6EF5" />
+            <Text color="dimmed" align="center" size="md">
+              No books in your library yet. Start by adding some!
             </Text>
-            <Grid
-              mt="md"
-              columns={2}
-              justify="center"
-              align="center"
-              gutter="xs"
+          </Center>
+        ) : (
+          currUserBooks.map((book) => (
+            <Card
+              key={book.id}
+              shadow="sm"
+              padding="lg"
+              radius="md"
+              className="post-card"
             >
-              <Grid.Col
-                span={1.5}
+              <Card.Section>
+                <Image
+                  src={book.coverImage}
+                  height={300}
+                  width={0}
+                  alt={book.title}
+                />
+              </Card.Section>
+              <Group position="apart" mt="md" mb="xs">
+                <Text fw={500}>{book.title}</Text>
+              </Group>
+              <Text size="sm" color="dimmed">
+                {book.author}
+              </Text>
+              <Grid
+                mt="md"
+                columns={2}
+                justify="center"
+                align="center"
+                gutter="xs"
               >
-                <Button
-                  color="indigo"
-                  fullWidth
-                  radius="md"
-                  onClick={() => handleViewBook(book)}
+                <Grid.Col
+                  span={1.5}
                 >
-                  View Book
-                </Button>
-              </Grid.Col>
-              <Grid.Col
-                span={0.5}
-              >
-                <ActionIcon
-                  variant="outline"
-                  color="red"
-                  size="lg"
-                  onClick={() => handleDeleteBook(book._id)}
+                  <Button
+                    color="indigo"
+                    fullWidth
+                    radius="md"
+                    onClick={() => handleViewBook(book)}
+                  >
+                    View Book
+                  </Button>
+                </Grid.Col>
+                <Grid.Col
+                  span={0.5}
                 >
-                  <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
-                </ActionIcon>
-              </Grid.Col>
-            </Grid>
-
-          </Card>
-        ))}
+                  <ActionIcon
+                    variant="outline"
+                    color="red"
+                    size="lg"
+                    onClick={() => handleDeleteBook(book._id)}
+                  >
+                    <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                  </ActionIcon>
+                </Grid.Col>
+              </Grid>
+            </Card>
+          ))
+        )}
       </div>
 
       <BookModal

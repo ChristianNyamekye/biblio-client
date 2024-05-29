@@ -5,9 +5,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 
-function TradeModal({
-  isOpen, onClose, book,
-}) {
+function TradeModal({ isOpen, onClose, book }) {
   const navigate = useNavigate();
   const [offeredBookId, setOfferedBookId] = useState('');
   const [tradeStatus, setTradeStatus] = useState('');
@@ -16,8 +14,12 @@ function TradeModal({
     fetchUserBooks: state.biblioSlice.fetchUserBooks,
   }));
 
-  const sendTradeRequest = useStore(({ biblioSlice }) => biblioSlice.sendTradeRequest);
-  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+  const sendTradeRequest = useStore(
+    ({ biblioSlice }) => biblioSlice.sendTradeRequest,
+  );
+  const currUser = useStore(
+    ({ biblioSlice }) => biblioSlice.userProfileInformation,
+  );
 
   useEffect(() => {
     fetchUserBooks();
@@ -59,20 +61,21 @@ function TradeModal({
         </Card.Section>
         {tradeStatus ? (
           <Text size="md" style={{ marginTop: 14, textAlign: 'center' }}>
-            Congrats! Your trade offer has been sent! Check back later to see if they accept.
+            Congrats! Your trade offer has been sent! Check back later to see if
+            they accept.
           </Text>
         ) : (
           <>
-            <Text
-              size="md"
-              style={{ marginTop: 14, textAlign: 'center' }}
-            >
+            <Text size="md" style={{ marginTop: 14, textAlign: 'center' }}>
               Select a book from your library to trade for {book.title}.
             </Text>
             <Select
               label="Choose your book to trade:"
               placeholder="Select a book"
-              data={currUserBooks.map(({ id, title }) => ({ value: id, label: title }))}
+              data={currUserBooks.map(({ id, title }) => ({
+                value: id,
+                label: title,
+              }))}
               value={offeredBookId}
               onChange={setOfferedBookId}
               style={{ marginTop: 14 }}

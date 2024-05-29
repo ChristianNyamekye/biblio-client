@@ -122,7 +122,10 @@ export default function createBookSlice(set, get) {
 
     sendTradeRequest: async (userId, requestInfo) => {
       try {
-        const response = await axios.post(`${ROOT_URL}/users/${userId}/trade`, requestInfo);
+        const response = await axios.post(
+          `${ROOT_URL}/users/${userId}/trade`,
+          requestInfo,
+        );
         toast.success('Trade request successfully');
       } catch (error) {
         get().errorSlice.newError(error.message);
@@ -133,7 +136,10 @@ export default function createBookSlice(set, get) {
     updateTradeRequest: async (userId, tradeId, newStatus) => {
       try {
         console.log(userId, tradeId, newStatus);
-        const response = await axios.put(`${ROOT_URL}/users/${userId}/trade/${tradeId}`, newStatus);
+        const response = await axios.put(
+          `${ROOT_URL}/users/${userId}/trade/${tradeId}`,
+          newStatus,
+        );
         console.log('in store', response);
         toast.success('Trade response sent!');
       } catch (error) {
@@ -155,6 +161,35 @@ export default function createBookSlice(set, get) {
         );
       } catch (error) {
         toast.error(`Error loading books: ${error.message}`);
+      }
+    },
+
+    getRelatedBooks: async (currentBook) => {
+      if (!currentBook || !currentBook.genre) {
+        console.error('Current book is invalid or missing genre:', currentBook);
+        return [];
+      }
+
+      try {
+        const response = await axios.get(`${ROOT_URL}/books/all-uploaded`);
+        const allBooks = response.data;
+
+        if (!Array.isArray(allBooks)) {
+          console.error('Unexpected data format:', allBooks);
+          return [];
+        }
+
+        const relatedBooks = allBooks.filter((book) => book
+      && book.genre
+      && book.id
+      && book.genre === currentBook.genre
+      && book.id !== currentBook.id).slice(0, 3);
+
+        console.log('Related books:', relatedBooks);
+        return relatedBooks;
+      } catch (error) {
+        console.error('Error fetching or processing books:', error);
+        return [];
       }
     },
 

@@ -106,6 +106,11 @@ function ActiveOffers() {
     handleGetReceivedRequestInfo();
   }, []);
 
+  useEffect(() => {
+    handleGetSentRequestInfo();
+    handleGetReceivedRequestInfo();
+  }, [currUser]);
+
   const handleUpdateTrade = async (offerId, newStatus) => {
     try {
       await updateTradeRequest(currUser.id, offerId, { newStatus });

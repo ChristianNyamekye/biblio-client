@@ -1,10 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, Group, Button, Stack, SimpleGrid, Popover, Center,
+  Text, Group, Button, Stack, SimpleGrid, Popover,
 } from '@mantine/core';
 import axios from 'axios';
-import { IconAlertOctagon } from '@tabler/icons-react';
 import useStore from '../../store';
 
 function ActiveOffers() {
@@ -105,12 +104,19 @@ function ActiveOffers() {
   useEffect(() => {
     handleGetSentRequestInfo();
     handleGetReceivedRequestInfo();
+  }, []);
+
+  useEffect(() => {
+    handleGetSentRequestInfo();
+    handleGetReceivedRequestInfo();
   }, [currUser]);
 
   const handleUpdateTrade = async (offerId, newStatus) => {
     try {
       await updateTradeRequest(currUser.id, offerId, { newStatus });
       await fetchUser(currUser.id);
+      handleGetSentRequestInfo();
+      handleGetReceivedRequestInfo();
     } catch (error) {
       console.error('Error updating trade request:', error);
     }
@@ -126,112 +132,94 @@ function ActiveOffers() {
       <Stack>
         <div className="offers-section">
           <h3 className="offer-subtitle">Sent Offers</h3>
-          {sentRequests.length === 0 ? (
-            <Center style={{ flexDirection: 'column', height: '100%' }}>
-              <IconAlertOctagon size={48} strokeWidth={2} color="#4C6EF5" />
-              <Text color="dimmed" align="center" size="md">
-                No offers sent yet. Search through the catalog to find other books.
-              </Text>
-            </Center>
-          ) : (
-            <SimpleGrid cols={3} spacing="md">
-              {sentRequests.map((offer) => (
+          <SimpleGrid cols={3} spacing="md">
+            {sentRequests.map((offer) => (
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
+                <div className="offer-header">
+                  <span className="highlight">You Requested:</span> {offer.senderWantsBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
+                <div className="offer-header">
+                  <span className="highlight">You Offered:</span> {offer.senderGivesBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
                 <div
-                  key={offer.offerId}
-                  className="offer-card"
+                  className="offer-text"
                   style={{
-                    border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
                   }}
                 >
-                  <div className="offer-header">
-                    <span className="highlight">You Requested:</span> {offer.senderWantsBook.title}
-                  </div>
-                  <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
-                  <div className="offer-header">
-                    <span className="highlight">You Offered:</span> {offer.senderGivesBook.title}
-                  </div>
-                  <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                  <div
-                    className="offer-text"
-                    style={{
-                      color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
-                    }}
-                  >
-                    Status: {offer.status}
-                  </div>
-                  <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
-                  {offer.status === 'accepted' && (
-                  <Popover width={200} position="top" withArrow shadow="md">
-                    <Popover.Target>
-                      <Button fullWidth color="indigo">Email User</Button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <Text size="sm">@{offer.receiverEmailEmail}</Text>
-                    </Popover.Dropdown>
-                  </Popover>
-                  )}
+                  Status: {offer.status}
                 </div>
-              ))}
-            </SimpleGrid>
-          )}
+                <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.receiverEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
         <div className="offers-section">
           <h3 className="offer-subtitle">Received Offers</h3>
-          {receivedRequests.length === 0 ? (
-            <Center style={{ flexDirection: 'column', height: '100%' }}>
-              <IconAlertOctagon size={48} strokeWidth={2} color="#4C6EF5" />
-              <Text color="dimmed" align="center" size="md">
-                No offers received yet. Add more books to your library for other users.
-              </Text>
-            </Center>
-          ) : (
-            <SimpleGrid cols={3} spacing="md">
-              {receivedRequests.map((offer) => (
+          <SimpleGrid cols={3} spacing="md">
+            {receivedRequests.map((offer) => (
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
+                <div className="offer-header">
+                  <span className="highlight">@{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
+                <div className="offer-header">
+                  <span className="highlight">@{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
+                </div>
+                <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
                 <div
-                  key={offer.offerId}
-                  className="offer-card"
+                  className="offer-text"
                   style={{
-                    border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
                   }}
                 >
-                  <div className="offer-header">
-                    <span className="highlight">@{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
-                  </div>
-                  <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
-                  <div className="offer-header">
-                    <span className="highlight">@{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
-                  </div>
-                  <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                  <div
-                    className="offer-text"
-                    style={{
-                      color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
-                    }}
-                  >
-                    Status: {offer.status}
-                  </div>
-                  <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
-                  {offer.status === 'pending' && (
-                  <Group position="right" mt="md">
-                    <Button onClick={() => handleUpdateTrade(offer.offerId, 'accepted')} color="green">Accept</Button>
-                    <Button variant="outline" onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
-                  </Group>
-                  )}
-
-                  {offer.status === 'accepted' && (
-                  <Popover width={200} position="top" withArrow shadow="md">
-                    <Popover.Target>
-                      <Button fullWidth color="indigo">Email User</Button>
-                    </Popover.Target>
-                    <Popover.Dropdown>
-                      <Text size="sm">@{offer.senderEmail}</Text>
-                    </Popover.Dropdown>
-                  </Popover>
-                  )}
+                  Status: {offer.status}
                 </div>
-              ))}
-            </SimpleGrid>
-          )}
+                <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'pending' && (
+                <Group position="right" mt="md">
+                  <Button onClick={() => handleUpdateTrade(offer.offerId, 'accepted')} color="green">Accept</Button>
+                  <Button variant="outline" onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
+                </Group>
+                )}
+
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.senderEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
+              </div>
+            ))}
+          </SimpleGrid>
         </div>
       </Stack>
     </div>

@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Modal, Button, Text, Card, Image, Select, CloseButton,
+  Modal, Button, Text, Card, Image, Select,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
 
 function TradeModal({
-  isOpen, onClose, user, book,
+  isOpen, onClose, book,
 }) {
   const navigate = useNavigate();
   const [offeredBookId, setOfferedBookId] = useState('');
-  const [tradeStatus, setTradeStatus] = useState('');
   const { currUserBooks, fetchUserBooks } = useStore((state) => ({
     currUserBooks: state.biblioSlice.currUserBooks,
     fetchUserBooks: state.biblioSlice.fetchUserBooks,

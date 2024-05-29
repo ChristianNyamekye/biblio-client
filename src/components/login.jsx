@@ -83,10 +83,7 @@ function Login() {
         </Button>
 
         <Text align="center" size="sm">
-          New to Biblio?{' '}
-          <Anchor href="/signup" size="sm">
-            Sign up here!
-          </Anchor>
+          New to Biblio?  <Anchor href="/signup" size="sm">Sign up here!</Anchor>
         </Text>
       </Paper>
     </BackgroundImage>

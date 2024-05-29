@@ -116,8 +116,6 @@ function ActiveOffers() {
     try {
       await updateTradeRequest(currUser.id, offerId, { newStatus });
       await fetchUser(currUser.id);
-      handleGetSentRequestInfo();
-      handleGetReceivedRequestInfo();
     } catch (error) {
       console.error('Error updating trade request:', error);
     }

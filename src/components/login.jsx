@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  TextInput, Button, Paper, Title, Text, BackgroundImage,
+  TextInput, Button, Paper, Title, Text, BackgroundImage, Anchor,
 } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 import useStore from '../store';
@@ -42,10 +42,18 @@ function Login() {
       src={loginPic}
       radius="sm"
       style={{
-        width: 'auto', height: '84vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat',
+        width: 'auto',
+        height: '84vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
       }}
     >
-      <Paper radius="md"
+      <Paper
+        radius="md"
         p="xl"
         withBorder
         style={{ minWidth: 700, maxWidth: 800, minHeight: 300 }}
@@ -70,18 +78,15 @@ function Login() {
           type="password"
           mb="md"
         />
-        <Button
-          fullWidth
-          mt="md"
-          mb="md"
-          color="indigo"
-          onClick={onClickLogin}
-        >
+        <Button fullWidth mt="md" mb="md" color="indigo" onClick={onClickLogin}>
           Log in
         </Button>
 
         <Text align="center" size="sm">
-          New to Biblio? <Text component="a" href="/signup" size="sm" weight={500} color="indigo">Sign up here!</Text>
+          New to Biblio?{' '}
+          <Anchor href="/signup" size="sm">
+            Sign up here!
+          </Anchor>
         </Text>
       </Paper>
     </BackgroundImage>

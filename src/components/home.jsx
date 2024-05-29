@@ -12,15 +12,12 @@ import {
   Image,
   SimpleGrid,
 } from '@mantine/core';
-import axios, { all } from 'axios';
 import debounce from 'lodash.debounce';
-import { IconCirclePlus, IconHeart, IconTrash } from '@tabler/icons-react';
 import useStore from '../store';
 import BookModal from './bookModal';
 
 function Home() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [lastSearchTerm, setLastSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
@@ -30,58 +27,34 @@ function Home() {
 
   useEffect(() => {
     fetchAllBooks();
-  }, []);
+  }, [fetchAllBooks]);
 
-  const filterUniqueBooks = (books) => {
-    const seenTitles = new Set();
-    return books.filter(({ volumeInfo: { title } }) => {
-      if (seenTitles.has(title)) {
-        return false;
+  const filterUniqueBooks = useCallback(
+    debounce((query) => {
+      if (!query) {
+        setSearchResults([]);
+        return;
       }
-      seenTitles.add(title);
-      return true;
-    });
-  };
-
-  const fetchBooks = useCallback(
-    debounce(async (query) => {
-      if (!query) return;
       setLoading(true);
       try {
-        const response = await axios.get(
-          'https://project-api-biblio.onrender.com/api/books/search',
-          {
-            params: { query },
-          },
+        const results = allBooks.filter(
+          (book) => book.title.toLowerCase().includes(query.toLowerCase())
+            || book.author.toLowerCase().includes(query.toLowerCase()),
         );
-        const uniqueBooks = filterUniqueBooks(response.data.items || []);
-        setSearchResults(uniqueBooks);
+        const uniqueResults = Array.from(
+          new Set(results.map((book) => book.title)),
+        ).map((title) => results.find((book) => book.title === title));
+        setSearchResults(uniqueResults);
       } finally {
         setLoading(false);
       }
     }, 300),
-    [],
+    [allBooks],
   );
 
   useEffect(() => {
-    fetchBooks(searchTerm);
-  }, [searchTerm]);
-
-  const handleSubmit = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        'https://project-api-biblio.onrender.com/api/books/fetchBook',
-        {
-          params: { title: `intitle:${lastSearchTerm}` },
-        },
-      );
-      const book = response.data;
-      console.log(`RESULTS: ${JSON.stringify(book)}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+    filterUniqueBooks(searchTerm);
+  }, [searchTerm, filterUniqueBooks]);
 
   const [bookDetailsOpened, setBookDetailsOpened] = useState(false);
 
@@ -107,30 +80,19 @@ function Home() {
             label="Find Book"
             placeholder="Enter Title or Author"
             data={searchResults.map((book) => ({
-              value: book.volumeInfo.title,
-              label: book.volumeInfo.title,
-              description: book.volumeInfo.authors?.join(', '),
+              value: book.title || 'Unknown Title',
+              label: book.title || 'Unknown Title',
+              description: book.author || 'No authors listed',
             }))}
-            onChange={(value) => {
-              setSearchTerm(value);
-              setLastSearchTerm(value);
-            }}
+            onChange={(value) => setSearchTerm(value)}
             rightSection={loading ? <Loader size="sm" /> : null}
             style={{ flex: 3 }}
           />
-          <Button
-            onClick={handleSubmit}
-            color="indigo"
-            disabled={loading}
-            style={{ flex: 1, marginTop: '20px' }}
-          >
-            Submit
-          </Button>
         </Group>
       </Container>
 
       <div className="library-card-holder">
-        {allBooks.map((book) => (
+        {(searchResults.length > 0 ? searchResults : allBooks).map((book) => (
           <Card
             key={book.id}
             shadow="sm"

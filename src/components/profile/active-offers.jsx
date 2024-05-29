@@ -1,17 +1,18 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import {
-  Text, Group, Title, Button, Stack, Card, Divider,
-  SimpleGrid,
+  Text, Group, Button, Stack, SimpleGrid, Popover,
 } from '@mantine/core';
 import axios from 'axios';
 import useStore from '../../store';
 
 function ActiveOffers() {
-  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
-
   const [sentRequests, setSentRequests] = useState([]);
   const [receivedRequests, setReceivedRequests] = useState([]);
+
+  const updateTradeRequest = useStore(({ biblioSlice }) => biblioSlice.updateTradeRequest);
+  const fetchUser = useStore(({ biblioSlice }) => biblioSlice.fetchUser);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
   // const ROOT_URL = 'http://localhost:9090/api';
@@ -31,12 +32,14 @@ function ActiveOffers() {
           return null;
         }
 
-        console.log('Fetching details for books:', senderWants, senderGives);
+        console.log('here', offer);
 
         const [senderWantsResponse, senderGivesResponse] = await Promise.all([
           axios.get(`${ROOT_URL}/books/${senderWants}`),
           axios.get(`${ROOT_URL}/books/${senderGives}`),
         ]);
+
+        const receiverUserObject = await axios.get(`${ROOT_URL}/trade-user/${offer.receiverID}`);
 
         return {
           offerId: offer._id,
@@ -45,6 +48,7 @@ function ActiveOffers() {
           status: offer.status,
           receiverID: offer.receiverID,
           requestedDate: offer.requestedDate,
+          receiverEmail: receiverUserObject.data.email,
         };
       }));
 
@@ -53,12 +57,6 @@ function ActiveOffers() {
       console.error('Error fetching book details:', error);
     }
   };
-
-  useEffect(() => {
-    handleGetSentRequestInfo();
-  }, [currUser]);
-
-  console.log('sent', sentRequests);
 
   const handleGetReceivedRequestInfo = async () => {
     try {
@@ -77,12 +75,12 @@ function ActiveOffers() {
           return null;
         }
 
-        console.log('Fetching details for books:', senderWants, senderGives);
-
         const [senderWantsResponse, senderGivesResponse] = await Promise.all([
           axios.get(`${ROOT_URL}/books/${senderWants}`),
           axios.get(`${ROOT_URL}/books/${senderGives}`),
         ]);
+
+        const senderUserObject = await axios.get(`${ROOT_URL}/trade-user/${offer.senderID}`);
 
         return {
           offerId: offer._id,
@@ -91,6 +89,9 @@ function ActiveOffers() {
           status: offer.status,
           receiverID: offer.receiverID,
           requestedDate: offer.requestedDate,
+          senderUsername: senderUserObject.data.username,
+          senderEmail: senderUserObject.data.email,
+
         };
       }));
 
@@ -103,19 +104,25 @@ function ActiveOffers() {
   useEffect(() => {
     handleGetSentRequestInfo();
     handleGetReceivedRequestInfo();
+  }, []);
+
+  useEffect(() => {
+    handleGetSentRequestInfo();
+    handleGetReceivedRequestInfo();
   }, [currUser]);
 
-  console.log('received', receivedRequests);
-
-  const updateOfferStatus = async (offerId, newStatus) => {
+  const handleUpdateTrade = async (offerId, newStatus) => {
     try {
-      await axios.patch(`${ROOT_URL}/trade-requests/${offerId}`, { status: newStatus });
+      await updateTradeRequest(currUser.id, offerId, { newStatus });
+      await fetchUser(currUser.id);
       handleGetSentRequestInfo();
       handleGetReceivedRequestInfo();
     } catch (error) {
-      console.error('Error updating offer status:', error);
+      console.error('Error updating trade request:', error);
     }
   };
+
+  console.log(receivedRequests);
 
   return (
     <div className="center-dash">
@@ -127,17 +134,40 @@ function ActiveOffers() {
           <h3 className="offer-subtitle">Sent Offers</h3>
           <SimpleGrid cols={3} spacing="md">
             {sentRequests.map((offer) => (
-              <div key={offer.offerId} className="offer-card">
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
                 <div className="offer-header">
-                  <span className="highlight">Requested Book:</span> {offer.senderWantsBook.title}
+                  <span className="highlight">You Requested:</span> {offer.senderWantsBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
                 <div className="offer-header">
-                  <span className="highlight">Offered Book:</span> {offer.senderGivesBook.title}
+                  <span className="highlight">You Offered:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                <div className="offer-text">Status: {offer.status}</div>
+                <div
+                  className="offer-text"
+                  style={{
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
+                  }}
+                >
+                  Status: {offer.status}
+                </div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.receiverEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
               </div>
             ))}
           </SimpleGrid>
@@ -146,21 +176,47 @@ function ActiveOffers() {
           <h3 className="offer-subtitle">Received Offers</h3>
           <SimpleGrid cols={3} spacing="md">
             {receivedRequests.map((offer) => (
-              <div key={offer.offerId} className="offer-card">
+              <div
+                key={offer.offerId}
+                className="offer-card"
+                style={{
+                  border: `1px solid ${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#e0e0e0'}`,
+                }}
+              >
                 <div className="offer-header">
-                  <span className="highlight">Other Person Wants Book:</span> {offer.senderWantsBook.title}
+                  <span className="highlight">@{offer.senderUsername} wants:</span> {offer.senderWantsBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderWantsBook.author}</div>
                 <div className="offer-header">
-                  <span className="highlight">Other Person is Offering Book:</span> {offer.senderGivesBook.title}
+                  <span className="highlight">@{offer.senderUsername} is offering:</span> {offer.senderGivesBook.title}
                 </div>
                 <div className="offer-text">Author: {offer.senderGivesBook.author}</div><br />
-                <div className="offer-text">Status: {offer.status}</div>
+                <div
+                  className="offer-text"
+                  style={{
+                    color: `${offer.status === 'accepted' ? '#40C057' : offer.status === 'rejected' ? '#FA5252' : '#666'}`,
+                  }}
+                >
+                  Status: {offer.status}
+                </div>
                 <div className="offer-text">Requested Date: {new Date(offer.requestedDate).toLocaleString()}</div>
+                {offer.status === 'pending' && (
                 <Group position="right" mt="md">
-                  <Button color="green" onClick={() => updateOfferStatus(offer.offerId, 'accepted')}>Accept</Button>
-                  <Button color="red" onClick={() => updateOfferStatus(offer.offerId, 'declined')}>Decline</Button>
+                  <Button onClick={() => handleUpdateTrade(offer.offerId, 'accepted')} color="green">Accept</Button>
+                  <Button variant="outline" onClick={() => handleUpdateTrade(offer.offerId, 'rejected')} color="red">Decline</Button>
                 </Group>
+                )}
+
+                {offer.status === 'accepted' && (
+                <Popover width={200} position="top" withArrow shadow="md">
+                  <Popover.Target>
+                    <Button fullWidth color="indigo">Email User</Button>
+                  </Popover.Target>
+                  <Popover.Dropdown>
+                    <Text size="sm">@{offer.senderEmail}</Text>
+                  </Popover.Dropdown>
+                </Popover>
+                )}
               </div>
             ))}
           </SimpleGrid>

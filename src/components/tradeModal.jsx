@@ -81,6 +81,7 @@ function TradeModal({
               style={{ marginTop: 14 }}
               onClick={handleTradeRequest}
               disabled={!offeredBookId}
+              color="indigo"
             >
               Send Trade Request
             </Button>
@@ -88,8 +89,10 @@ function TradeModal({
         )}
         <Button
           fullWidth
+          variant="outline"
           style={{ marginTop: 14 }}
           onClick={handleKeepLooking}
+          color="indigo"
         >
           Keep Looking
         </Button>

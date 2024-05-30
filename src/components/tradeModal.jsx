@@ -42,7 +42,6 @@ function TradeModal({ isOpen, onClose, book }) {
   };
 
   if (!book) return null;
-  console.log('book info', book);
 
   return (
     <Modal

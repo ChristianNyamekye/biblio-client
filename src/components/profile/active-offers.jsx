@@ -121,8 +121,6 @@ function ActiveOffers() {
     }
   };
 
-  console.log(receivedRequests);
-
   return (
     <div className="center-dash">
       <div className="center-dash-header">

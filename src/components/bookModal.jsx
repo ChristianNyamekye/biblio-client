@@ -6,12 +6,13 @@ import { IconStar } from '@tabler/icons-react';
 import TradeModal from './tradeModal';
 import useStore from '../store';
 
-function BookModal({ opened, onClose, book }) {
+function BookModal({
+  opened, onClose, book, tradable,
+}) {
   const [isTradeModalOpen, setIsTradeModalOpen] = useState(false);
   const [relatedBooks, setRelatedBooks] = useState([]);
-  const getRelatedBooks = useStore(
-    ({ biblioSlice }) => biblioSlice.getRelatedBooks,
-  );
+  const getRelatedBooks = useStore(({ biblioSlice }) => biblioSlice.getRelatedBooks);
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
 
   useEffect(() => {
     if (book) {
@@ -22,7 +23,6 @@ function BookModal({ opened, onClose, book }) {
       fetchRelatedBooks();
     }
   }, [book, getRelatedBooks]);
-  console.log('Related books in modal:', relatedBooks);
 
   const handleOpenTradeModal = () => {
     setIsTradeModalOpen(true);
@@ -82,7 +82,7 @@ function BookModal({ opened, onClose, book }) {
                 <SimpleGrid cols={3} spacing="sm">
                   {relatedBooks.map(
                     (
-                      relatedBook, // Ensure relatedBook has a unique identifier, for example `id`
+                      relatedBook,
                     ) => (
                       <Card key={relatedBook.id} shadow="sm" p="lg">
                         {' '}
@@ -106,6 +106,7 @@ function BookModal({ opened, onClose, book }) {
               <Text />
             )}
             <Group position="left" style={{ width: '100%', marginTop: 20 }}>
+              {tradable && currUser?.id !== book?.ownerId && (
               <Button
                 variant="filled"
                 color="indigo"
@@ -113,6 +114,8 @@ function BookModal({ opened, onClose, book }) {
               >
                 Send Trade Request
               </Button>
+              )}
+
             </Group>
           </div>
         </SimpleGrid>

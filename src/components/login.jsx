@@ -15,7 +15,6 @@ function Login() {
   const navigate = useNavigate();
 
   const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
-  console.log('login', currUser);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -28,7 +27,6 @@ function Login() {
   const onClickLogin = async () => {
     await loginUser({ email, password });
     setIsUserLoggedIn(true);
-    console.log('logging in user');
   };
 
   useEffect(() => {

@@ -28,8 +28,6 @@ function Wishlist({ userId }) {
     fetchUserWishList(userId);
   }, []);
 
-  console.log('in wishlist', currUserWishList);
-
   const filterUniqueBooks = (books) => {
     const seenTitles = new Set();
     return books.filter(({ volumeInfo: { title } }) => {
@@ -43,7 +41,6 @@ function Wishlist({ userId }) {
 
   useEffect(() => {
     if (searchTerm) {
-      console.log('Fetching books for:', searchTerm);
       const fetchBooks = async () => {
         try {
           const response = await axios.get(
@@ -228,6 +225,7 @@ function Wishlist({ userId }) {
         opened={bookDetailsOpened}
         onClose={() => setBookDetailsOpened(false)}
         book={selectedBook}
+        tradable={false}
       />
     </div>
   );

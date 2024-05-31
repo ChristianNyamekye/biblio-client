@@ -29,8 +29,6 @@ function Library({ userId }) {
   const fetchUserBooks = useStore(({ biblioSlice }) => biblioSlice.fetchUserBooks);
   const currUserBooks = useStore(({ biblioSlice }) => biblioSlice.currUserBooks);
 
-  console.log('books in lib', currUserBooks);
-
   const ROOT_URL = 'https://project-api-biblio.onrender.com/api';
   // const ROOT_URL = 'http://localhost:9090/api';
 
@@ -51,7 +49,6 @@ function Library({ userId }) {
 
   useEffect(() => {
     if (searchTerm) {
-      console.log('Fetching books for:', searchTerm);
       const fetchBooks = async () => {
         try {
           const response = await axios.get(
@@ -74,7 +71,6 @@ function Library({ userId }) {
 
   const handleAddBook = async () => {
     if (selectedBook) {
-      console.log('selectedBook', selectedBook);
       try {
         const bookDetails = {
           title: selectedBook.volumeInfo.title,
@@ -94,8 +90,7 @@ function Library({ userId }) {
             || 'Unknown',
           tradeStatus: 'available',
         };
-        console.log('userid:', userId);
-        console.log('details:', bookDetails);
+
         const response = await axios.post(
           'https://project-api-biblio.onrender.com/api/books',
           // 'http://localhost:9090/api/books',
@@ -251,6 +246,7 @@ function Library({ userId }) {
         opened={bookDetailsOpened}
         onClose={() => setBookDetailsOpened(false)}
         book={selectedBook}
+        tradable={false}
       />
     </div>
   );

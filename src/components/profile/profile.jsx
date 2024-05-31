@@ -24,8 +24,6 @@ function Profile() {
     fetchUser(userId);
   }, []);
 
-  console.log('user id', currUser.id);
-
   const handleBookSearch = (e) => {
     setSearchTerm(e.target.value);
   };

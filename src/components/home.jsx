@@ -25,6 +25,9 @@ function Home() {
   const fetchAllBooks = useStore(({ biblioSlice }) => biblioSlice.fetchAllBooks);
   const allBooks = useStore(({ biblioSlice }) => biblioSlice.allBooks);
 
+  const currUser = useStore(({ biblioSlice }) => biblioSlice.userProfileInformation);
+  const filteredBooks = allBooks.filter((book) => book.owner !== currUser.id);
+
   useEffect(() => {
     fetchAllBooks();
   }, [fetchAllBooks]);
@@ -37,7 +40,7 @@ function Home() {
       }
       setLoading(true);
       try {
-        const results = allBooks.filter(
+        const results = filteredBooks.filter(
           (book) => book.title.toLowerCase().includes(query.toLowerCase())
             || book.author.toLowerCase().includes(query.toLowerCase()),
         );
@@ -92,7 +95,7 @@ function Home() {
       </Container>
 
       <div className="library-card-holder">
-        {(searchResults.length > 0 ? searchResults : allBooks).map((book) => (
+        {(searchResults.length > 0 ? searchResults : filteredBooks).map((book) => (
           <Card
             key={book.id}
             shadow="sm"
@@ -132,6 +135,7 @@ function Home() {
         opened={bookDetailsOpened}
         onClose={() => setBookDetailsOpened(false)}
         book={selectedBook}
+        tradable
       />
     </div>
   );
